@@ -1,0 +1,8 @@
+#+TITLE: pritter
+
+* 说明
+基于 laravel 5.4 的推特采集/显示程序
+* 需求
+- laravel 5.4
+- 推特 api key
+- 可能需要代理 (用于访问推特api, 你懂的)

@@ -11,6 +11,17 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [
+    'as' => 'home',
+    'uses' => 'HomeController@index',
+]);
+
+Route::get('/lists', [
+    'as' => 'lists',
+    'uses' => 'HomeController@lists',
+]);
+
+Route::get('/handle', [
+    'as' => 'handle',
+    'uses' => 'HomeController@handle',
+]);

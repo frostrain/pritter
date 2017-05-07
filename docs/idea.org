@@ -1,0 +1,102 @@
+#+TITLE: pritter idea
+#+AUTHOR: frostrain
+
+* 注意
+对于旧推特(以前请求的数据), 我们应该意识到, 其数据(比如like数和转推数)可能是陈旧的..
+* 后端
+- [ ] 改进 api 包
+- [ ] Tweet 模型
+- [ ] TweetTranslation 模型
+- [ ] TwitterUser 模型
+- [ ] Media 模型?
+** Tweet  模型
+- id
+  twitter api 返回的 id, 不是自增
+- retweet_id
+  转推id
+- quote_id
+  引用id
+- reply_id
+  回复id
+- reply_screen_name
+- text
+- entities
+- twitter_user_id
+- retweet_count
+- favorite_count
+- lang
+- created_at
+- state
+  tinyint, 推文状态 (后台管理)
+** TweetTranslation
+- id
+  对应 Tweet 的 id
+- text
+- lang
+- source
+  baidu, google, user
+- created_at
+- updated_at
+- state
+  状态
+** TwitterUser
+- id
+  twitter api 返回的 id, 不是自增
+- name
+- screen_name
+- profile_image_id
+- profile_banner_id
+- profile_background_image_id
+- location
+- description
+- url
+- statuses_count
+- favourites_count
+- followers_count
+- friends_count
+** Media
+非推特的 media
+
+- id
+  自增
+- origin_url
+  原始地址
+- type
+  photo 或 video
+- disk
+  本地保存的 disk
+- path
+  本地保存的 path
+** TweetMedia
+推特的 media
+
+- id
+  twitter api 返回的 id, 不是自增
+- media_url
+  原始地址
+- type
+  photo 或 video
+- disk
+  本地保存的 disk
+- path
+  本地保存的 path
+** RequestLog
+记录 请求结果, 返回的结果路径
+
+- id
+- disk
+- path
+- since_id
+- max_id
+- start_id
+- end_id
+- tweet_count
+- created_at
+** 定时任务
+- 获取最新的 首页推特(订阅推特)
+  每两分钟请求一次 GET statuses/home_timeline 来获取 当前用户的首页推特
+  请求之前可以先用 GET application/rate_limit_status 来检查 请求速率限制
+- 获取以前的 订阅推特
+- 获取 趋势?
+* 前端
+* 计划
