@@ -3,6 +3,12 @@
     "description": "Twitter api application by laravel.",
     "keywords": ["twitter", "laravel"],
     "license": "MIT",
+    "authors": [
+        {
+            "name": "frostrain",
+            "email": "frostrain@outlook.com"
+        }
+    ],
     "type": "project",
     "require": {
         "php": ">=5.6.4",

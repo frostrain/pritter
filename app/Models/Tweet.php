@@ -42,6 +42,11 @@ class Tweet extends Model
 
     }
 
+    public function translations()
+    {
+        return $this->hasMany('App\Models\TweetTranslation', 'tweet_id', 'id');
+    }
+
     public function user()
     {
         return $this->belongsTo('App\Models\TwitterUser', 'twitter_user_id', 'id');
@@ -87,7 +92,16 @@ class Tweet extends Model
 
     public function setExtendedEntitiesAttribute($entities)
     {
+        foreach ($entities['media'] as &$e) {
+            if (!TweetMedia::find($e['id'])) {
+                $t = new TweetMedia($e);
+                $t->save();
+            }
 
+            if($e['type'] == 'animated_gif'){
+                var_dump(json_encode($e));
+            }
+        }
     }
 
     /**

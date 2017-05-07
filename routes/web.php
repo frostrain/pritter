@@ -25,3 +25,8 @@ Route::get('/handle', [
     'as' => 'handle',
     'uses' => 'HomeController@handle',
 ]);
+
+Route::get('/translation', [
+    'as' => 'translation',
+    'uses' => 'HomeController@translation',
+]);

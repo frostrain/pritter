@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Storage;
 use App\Jobs\ParseTweetResponse;
+use App\Jobs\GetTweetsTranslation;
 use App\Models\Tweet;
 
 class HomeController extends Controller
@@ -40,6 +41,16 @@ class HomeController extends Controller
         $data = json_decode($json, true);
 
         dispatch(new ParseTweetResponse($data));
+
+        return view('home.list', ['lists' => []]);
+    }
+
+    public function translation()
+    {
+        $lists = Tweet::paginate(20);
+        $ids = $lists->getCollection()->pluck('id')->toArray();
+
+        dispatch(new GetTweetsTranslation($ids));
 
         return view('home.list', ['lists' => []]);
     }

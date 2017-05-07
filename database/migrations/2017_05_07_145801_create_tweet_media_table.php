@@ -16,7 +16,7 @@ class CreateTweetMediaTable extends Migration
         Schema::create('tweet_media', function (Blueprint $table) {
             $table->bigInteger('id')->unsigned();
 
-            $table->string('origin_url');
+            $table->string('media_url');
             $table->tinyInteger('type');
             $table->string('disk')->nullable();
             $table->string('path')->nullable();

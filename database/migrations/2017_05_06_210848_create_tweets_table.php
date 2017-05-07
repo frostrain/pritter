@@ -35,7 +35,7 @@ class CreateTweetsTable extends Migration
             $table->integer('favorite_count')->unsigned()->default(0);
             $table->string('lang')->nullable();
 
-            $table->smallInteger('state')->unsigned()->default(0);
+            $table->tinyInteger('state')->unsigned()->default(0);
             $table->timestamps();
 
             $table->primary('id');

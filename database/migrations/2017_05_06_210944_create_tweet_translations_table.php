@@ -14,16 +14,17 @@ class CreateTweetTranslationsTable extends Migration
     public function up()
     {
         Schema::create('tweet_translations', function (Blueprint $table) {
-            $table->bigInteger('id')->unsigned();
+            $table->increments('id')->unsigned();
+
+            $table->bigInteger('tweet_id')->unsigned();
 
             $table->string('text');
-            $table->string('lang');
+            $table->string('lang')->nullable();
             $table->string('source');
-            $table->smallInteger('state')->unsigned()->default(0);
+            $table->smallInteger('order')->default(0);
+            $table->tinyInteger('state')->unsigned()->default(0);
 
             $table->timestamps();
-
-            $table->primary('id');
         });
     }
 
