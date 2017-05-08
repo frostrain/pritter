@@ -178,6 +178,7 @@ return [
         App\Providers\RouteServiceProvider::class,
 
         Frostrain\Twitter\TwitterServiceProvider::class,
+        Frostrain\TranslatorApi\TranslatorApiServiceProvider::class,
 
         Barryvdh\Debugbar\ServiceProvider::class,
     ],
@@ -230,6 +231,7 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
 
         'Twitter' => Thujohn\Twitter\Facades\Twitter::class,
+        'TranslatorApi' => Frostrain\TranslatorApi\TranslatorApiFacade::class,
 
         'Debugbar' => Barryvdh\Debugbar\Facade::class,
     ],

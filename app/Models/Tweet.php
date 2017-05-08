@@ -15,7 +15,8 @@ class Tweet extends Model
     public $incrementing = false;
 
     protected $fillable = [
-        'id', 'retweeted_status', 'quoted_status', 'in_reply_to_status_id', 'in_reply_to_screen_name', 'text',
+        'id', 'id_str', 'retweeted_status', 'quoted_status', 'in_reply_to_status_id',
+        'in_reply_to_screen_name', 'truncated', 'text',
         'entities', 'user', 'retweet_count', 'favorite_count', 'lang', 'created_at',
         'extended_entities',
     ];
@@ -39,7 +40,45 @@ class Tweet extends Model
      */
     public function hasImage()
     {
+        // TODO
+    }
 
+    /**
+     * 设置 truncated 属性.
+     * 将传入的 $val 转换为 0 或 1.
+     * 虽然不转换 $val 也可以工作, 但是 $model->getDirty() 会认为有数据'脏了'.
+     * @param mixed $val
+     */
+    public function setTruncatedAttribute($val)
+    {
+        $this->attributes['truncated'] = $val ? 1 : 0;
+    }
+
+    /**
+     * 当前推文是否是对其它推文的 回复
+     * @return bool
+     */
+    public function isReply()
+    {
+        return $this->in_reply_to_status_id ? true : false;
+    }
+
+    /**
+     * 当前推文是否是对其它推文的 转推
+     * @return bool
+     */
+    public function isRetweet()
+    {
+        return $this->retweeted_id ? true : false;
+    }
+
+    /**
+     * 当前推文是否有 引用 其它推文
+     * @return bool
+     */
+    public function hasQuote()
+    {
+        return $this->quoted_id ? true : false;
     }
 
     public function translations()
@@ -47,19 +86,30 @@ class Tweet extends Model
         return $this->hasMany('App\Models\TweetTranslation', 'tweet_id', 'id');
     }
 
+    public function media()
+    {
+        return $this->hasMany('App\Models\TweetMedia', 'tweet_id', 'id');
+    }
+
     public function user()
     {
         return $this->belongsTo('App\Models\TwitterUser', 'twitter_user_id', 'id');
     }
 
-    public function retweetedStatus()
+    /**
+     * 被 转推 的推文
+     */
+    public function retweeted_status()
     {
         return $this->belongsTo('App\Models\Tweet', 'retweeted_id', 'id');
     }
 
-    public function quotedStatus()
+    /**
+     * 被 引用 的推文
+     */
+    public function quoted_status()
     {
-        return $this->hasOne('App\Models\Tweet', 'quoted_id', 'id');
+        return $this->belongsTo('App\Models\Tweet', 'quoted_id', 'id');
     }
 
     /**
@@ -92,14 +142,25 @@ class Tweet extends Model
 
     public function setExtendedEntitiesAttribute($entities)
     {
-        foreach ($entities['media'] as &$e) {
-            if (!TweetMedia::find($e['id'])) {
-                $t = new TweetMedia($e);
-                $t->save();
-            }
-
-            if($e['type'] == 'animated_gif'){
-                var_dump(json_encode($e));
+        if (!$this->exists) {
+            static::saved(function ($tweet) use (&$entities) {
+                if ($tweet->id === $this->id) {
+                    foreach ($entities['media'] as $e) {
+                        if (!TweetMedia::find($e['id'])) {
+                            $e['tweet_id'] = $tweet->id;
+                            $tm = new TweetMedia($e);
+                            $tm->save();
+                        }
+                    }
+                }
+            });
+        } else {
+            foreach ($entities['media'] as $e) {
+                if (!TweetMedia::find($e['id'])) {
+                    $e['tweet_id'] = $this->id;
+                    $tm = new TweetMedia($e);
+                    $tm->save();
+                }
             }
         }
     }

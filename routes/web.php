@@ -30,3 +30,5 @@ Route::get('/translation', [
     'as' => 'translation',
     'uses' => 'HomeController@translation',
 ]);
+
+Route::get('/convert', 'HomeController@convert');

@@ -14,9 +14,11 @@ class CreateTweetsTable extends Migration
     public function up()
     {
         Schema::create('tweets', function (Blueprint $table) {
-            // 我们不使用 自增id 作为主键, 直接使用 tweet 的 id 作为主键, 推特的id是64位无符号整形
+            // 我们不使用 自增id 作为主键, 直接使用 tweet 的 id 作为主键, 推特的id是64 bit无符号整形
             // $table->increments('id');
             $table->bigInteger('id')->unsigned();
+            // 由于 php 中的 bigInt 有可能存在精度问题, 这里用字符串保留原始id的精确值
+            $table->string('id_str');
             // 回复
             $table->bigInteger('in_reply_to_status_id')->unsigned()->nullable();
             $table->string('in_reply_to_screen_name')->nullable();
@@ -25,7 +27,7 @@ class CreateTweetsTable extends Migration
             // 转推
             $table->bigInteger('retweeted_id')->unsigned()->nullable();
 
-
+            $table->boolean('truncated')->default(0);
             $table->string('text')->nullable();
             $table->text('entities')->nullable();
 

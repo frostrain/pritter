@@ -20,8 +20,12 @@ class CreateTweetTranslationsTable extends Migration
 
             $table->string('text');
             $table->string('lang')->nullable();
+            // 来源说明, 比如 google.cn
             $table->string('source');
+            // 是否为人工翻译
+            $table->boolean('is_manual')->default(0);
             $table->smallInteger('order')->default(0);
+            // 状态
             $table->tinyInteger('state')->unsigned()->default(0);
 
             $table->timestamps();

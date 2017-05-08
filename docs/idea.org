@@ -9,6 +9,15 @@
 - [ ] TweetTranslation 模型
 - [ ] TwitterUser 模型
 - [ ] Media 模型?
+- [ ] 采集
+  + [ ] twitter api 采集
+  + [ ] twitter media 下载
+  + [ ] 非 twitter 的 media 下载?
+- [ ] 定时任务
+  + [ ] 定时采集 twitter api
+  + [ ] 定时下载 media
+  + [ ] 定时 机器翻译
+- [ ] 翻译
 ** Tweet  模型
 - id
   twitter api 返回的 id, 不是自增

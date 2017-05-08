@@ -12,7 +12,7 @@ class TwitterUser extends Model
     public $incrementing = false;
 
     protected $fillable = [
-        'id', 'name', 'screen_name', 'location', 'description', 'url', 'statuses_count',
+        'id', 'id_str', 'name', 'screen_name', 'location', 'description', 'url', 'statuses_count',
         'favourites_count', 'followers_count', 'friends_count', 'created_at',
         'profile_image_url', 'profile_banner_url', 'profile_background_image_url',
     ];
@@ -20,6 +20,12 @@ class TwitterUser extends Model
     public function getBigIntFields()
     {
         return ['id'];
+    }
+
+    public function getProfileImageUrlAttribute()
+    {
+        // TODO: 实现头像采集
+        return '/img/default_user.gif';
     }
 
     public function setProfileImageUrlAttribute($url)

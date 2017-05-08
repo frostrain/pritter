@@ -35,7 +35,5 @@ Artisan::command('pri:pu', function () {
 });
 
 Artisan::command('pri:t', function () {
-    $time = 'Sat May 06 11:08:56 +0000 2017';
-    $t = new Carbon\Carbon($time);
-    var_dump($t);
+
 });

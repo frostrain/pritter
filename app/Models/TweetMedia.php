@@ -12,7 +12,7 @@ class TweetMedia extends Model
     public $incrementing = false;
 
     protected $fillable = [
-        'id', 'media_url', 'type',
+        'id', 'id_str', 'tweet_id', 'media_url', 'type',
     ];
 
     /**
@@ -22,6 +22,14 @@ class TweetMedia extends Model
     public function getBigIntFields()
     {
         return ['id'];
+    }
+
+    public function getUrlAttribute()
+    {
+        if (!$this->disk) {
+            return '/img/default_img.gif';
+        } else {
+        }
     }
 
     /**

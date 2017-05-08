@@ -15,8 +15,13 @@ class CreateMediaTable extends Migration
     {
         Schema::create('media', function (Blueprint $table) {
             $table->increments('id');
+            $table->bigInteger('tweet_id')->unsigned();
+
             $table->string('origin_url');
             $table->tinyInteger('type');
+
+            // 尺寸, kb 取整?
+            $table->integer('size')->default(0);
             $table->string('disk')->nullable();
             $table->string('path')->nullable();
             $table->timestamps();

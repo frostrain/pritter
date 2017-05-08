@@ -6,6 +6,7 @@ use App\Models\Tweet;
 use App\Models\TweetTranslation;
 // use Frostrain\GoogleTranslate\TranslateClient;
 use Stichoza\GoogleTranslate\TranslateClient;
+use ReflectionClass;
 
 class GetTweetsTranslation
 {
@@ -50,39 +51,36 @@ class GetTweetsTranslation
 
     protected function requestGoogleTranslations($tweet)
     {
-        $tr_en = new TranslateClient();
-        $tr_en->setSource('ja');
-        $tr_en->setTarget('en');
+        // 要翻译成的语言
+        $langs = ['en', 'zh-CN'];
+        $tr = new TranslateClient();
+        // $tr->setSource('ja');
+
+        $reflectedClass = new ReflectionClass(TranslateClient::class);
+        $prop = $reflectedClass->getProperty('urlBase');
+        $prop->setAccessible(true);
+        $prop->setValue($tr, 'http://translate.google.cn/translate_a/single');
+
         //$tr_en->setUrlBase('http://translate.google.cn/translate_a/single');
 
-        $tr_cn = new TranslateClient();
-        $tr_cn->setSource('ja');
-        $tr_cn->setTarget('zh');
-        //$tr_cn->setUrlBase('http://translate.google.cn/translate_a/single');
+        foreach ($langs as $lang) {
+            try{
+                $tr->setTarget($lang);
 
-        try{
-            $data_en = [
-                'tweet_id' => $tweet->id,
-                'lang' => 'en',
-                'source' => 'google.cn',
-                'text' => $tr_en->translate($tweet->text),
-            ];
+                $data = [
+                    'tweet_id' => $tweet->id,
+                    'lang' => $lang,
+                    'source' => 'google.cn',
+                    'text' => $tr->translate($tweet->text),
+                ];
 
-            $data_cn = [
-                'tweet_id' => $tweet->id,
-                'lang' => 'zh',
-                'source' => 'google.cn',
-                'text' => $tr_cn->translate($tweet->text),
-            ];
+                (new TweetTranslation($data))->save();
 
-            (new TweetTranslation($data_en))->save();
-            (new TweetTranslation($data_cn))->save();
-        }catch(\Exception $e){
-            // 不管他
-            debug($tweet->text);
+            }catch(\Exception $e){
+                // 无视异常, 继续执行
+                debug($tweet->text);
+            }
         }
-
-
 
 
     }
