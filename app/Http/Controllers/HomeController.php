@@ -11,7 +11,7 @@ use TranslatorApi;
 
 class HomeController extends Controller
 {
-    protected $file = 'homeTimeline_1494205606.json';
+    protected $file = 'homeTimeline_1494243163.json';
     public function index()
     {
         $file = $this->file;

@@ -4,19 +4,22 @@
 * 注意
 对于旧推特(以前请求的数据), 我们应该意识到, 其数据(比如like数和转推数)可能是陈旧的..
 * 后端
-- [ ] 改进 api 包
-- [ ] Tweet 模型
-- [ ] TweetTranslation 模型
-- [ ] TwitterUser 模型
-- [ ] Media 模型?
-- [ ] 采集
-  + [ ] twitter api 采集
+- [X] 改进 api 包
+- [-] Tweet 模型
+- [-] TweetTranslation 模型
+- [-] TwitterUser 模型
+- [-] Media 模型?
+- [-] TimelineRequest
+- [-] 采集
+  + [X] twitter api 采集
   + [ ] twitter media 下载
   + [ ] 非 twitter 的 media 下载?
 - [ ] 定时任务
-  + [ ] 定时采集 twitter api
-  + [ ] 定时下载 media
-  + [ ] 定时 机器翻译
+  + [ ] 采集 twitter api (home_timeline)
+  + [ ] 检查是否有范围遗漏
+  + [ ] 采集 旧数据 (home_timeline)
+  + [ ] 下载 media
+  + [ ] 获取机器翻译
 - [ ] 翻译
 ** Tweet  模型
 - id
@@ -89,7 +92,7 @@
   本地保存的 disk
 - path
   本地保存的 path
-** RequestLog
+** TimelineRequest
 记录 请求结果, 返回的结果路径
 
 - id
@@ -97,9 +100,12 @@
 - path
 - since_id
 - max_id
-- start_id
-- end_id
-- tweet_count
+- start_id, 当期请求中返回的最小的id
+- end_id, 当期请求中返回的最大的id
+- count
+- is_success
+- is_covered, 当前请求是否覆盖了(since_id和max_id限制的)整个范围
+- error
 - created_at
 ** 定时任务
 - 获取最新的 首页推特(订阅推特)

@@ -17,10 +17,43 @@ class BigIntTest extends TestCase
     {
         $str = '861211878055321602';
         $big = 861211878055321602;
+        $str2 = '861211878055321601';
+        $big2 = 861211878055321601;
 
         // 返回的结果可能是 '861211878055321600'
         $r = number_format($big, 0, '.', '');
         $this->assertEquals($r, $str);
+    }
+
+    /**
+     * 可以成功
+     */
+    public function testBigIntCompare()
+    {
+        $big = 861211878055321602;
+        $big2 = 861211878055321601;
+
+        $this->assertTrue($big > $big2);
+    }
+
+    /**
+     * 这个例子竟然可以成功?
+     */
+    public function testBigIntStringCompare()
+    {
+        $str = '861211878055321602';
+        $str2 = '861211878055321601';
+        $this->assertTrue($str > $str2);
+    }
+
+    /**
+     * 由于精度问题, 这个测试会失败..
+     */
+    public function testBigIntStringToFloatCompare()
+    {
+        $str = '861211878055321602';
+        $str2 = '861211878055321601';
+        $this->assertTrue((float)$str > (float)$str2);
     }
 
     public function testBigToStringConvert2()
