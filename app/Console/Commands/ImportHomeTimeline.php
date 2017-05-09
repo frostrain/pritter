@@ -14,7 +14,7 @@ class ImportHomeTimeline extends Command
      *
      * @var string
      */
-    protected $signature = 'pri:import-home-timeline {--c|count=3}';
+    protected $signature = 'pri:import-home-timeline {--c|count=3} {--f|file=}';
 
     /**
      * The console command description.
@@ -41,5 +41,42 @@ class ImportHomeTimeline extends Command
     public function handle()
     {
         $count = $this->option('count');
+        $file = $this->option('file');
+        if (strstr($file, ',')) {
+            $file = explode(',', $file);
+        }
+
+        // 如果 $file 存在(本地文件), 则直接导入文件
+        if ($file) {
+            $this->importFromFiles($file);
+        } else {
+            $this->importFromRequests($count);
+        }
+    }
+
+    protected function importFromRequests($count)
+    {
+        $requests = TimelineRequest::getUnimportedRequest($count);
+        foreach ($requests as $r) {
+            $json = Stroage::disk($r->disk)->get($r->path);
+            $data = json_decode($json, true, 512, JSON_BIGINT_AS_STRING);
+            dispatch(new ParseTweetResponse($data));
+        }
+    }
+
+    protected function importFromFiles($files)
+    {
+        if ($files && !is_array($files)) {
+            $files = func_get_args();
+        }
+        if (!is_array($files)) {
+            $this->error('--file 参数错误! 命令终止!');
+            return;
+        }
+        foreach ($file as $f) {
+            // TODO: 读取文件
+            $data = [];
+            dispatch(new ParseTweetResponse($data));
+        }
     }
 }
