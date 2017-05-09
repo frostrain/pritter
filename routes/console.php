@@ -20,20 +20,10 @@ Artisan::command('inspire', function () {
 
 
 Artisan::command('pri:pu', function () {
-    // $r = env('TWITTER_CURL_SSL_VERIFYPEER', true);
-    // $r = Twitter::getLists();
-    $r = Twitter::getHomeTimeline(['count' => 200, 'format' => 'json']);
-    // $r = json_decode($r, true);
-    // $r = Twitter::getUserTimeline(['screen_name' => 'iRis_k_miyu', 'count' => 20, 'format' => 'json']);
 
-    $now = time();
-    Storage::disk('public')->put('homeTimeline_'.$now.'.json', $r);
-
-    $this->info('done!');
-    // $this->comment(Inspiring::quote());
-    // var_dump($r[0]);
 });
 
-Artisan::command('pri:t', function () {
-
+Artisan::command('pri:info', function () {
+    $max = ini_get('max_execution_time');
+    $this->info('max execution time: '.$max);
 });

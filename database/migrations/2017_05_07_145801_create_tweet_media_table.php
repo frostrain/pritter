@@ -20,10 +20,10 @@ class CreateTweetMediaTable extends Migration
             $table->bigInteger('tweet_id')->unsigned();
 
             $table->string('media_url');
-            $table->tinyInteger('type');
+            $table->tinyInteger('type')->unsigned();
 
-            // 尺寸, kb 取整
-            $table->integer('size')->default(0);
+            // 文件尺寸
+            $table->integer('size')->unsigned()->default(0);
             $table->string('disk')->nullable();
             $table->string('path')->nullable();
             $table->timestamps();

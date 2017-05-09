@@ -8,6 +8,7 @@ use App\Jobs\ParseTweetResponse;
 use App\Jobs\GetTweetsTranslation;
 use App\Models\Tweet;
 use TranslatorApi;
+use App\Models\TimelineRequest;
 
 class HomeController extends Controller
 {
@@ -43,22 +44,33 @@ class HomeController extends Controller
     // 测试
     public function convert()
     {
-        $file = $this->file;
-        $json = Storage::disk('public')->get($file);
+        // $file = $this->file;
+        // $json = Storage::disk('public')->get($file);
 
-        $data = json_decode($json, true, 512, JSON_BIGINT_AS_STRING);
+        // $data = json_decode($json, true, 512, JSON_BIGINT_AS_STRING);
 
-        $first = $data[0];
-        $t = Tweet::find($first['id']);
+        // $first = $data[0];
 
-        $t->fill($first);
-        debug($t->id);
-        debug($t->getKey());
-        debug($t->getDirty());
+        $max = TimelineRequest::getMaxId();
+        var_dump($max);
+
+
+        $t = Tweet::first();
+
+        var_dump($t->id);
+        var_dump($t->getKey());
+
 
         $t = Tweet::whereNotNull('quoted_id')->first();
-        debug($t->quoted_id);
+        var_dump($t->quoted_id);
+        var_dump($t->favorite_count);
 
+        $max = \DB::table('tweets')->max('id');
+        var_dump($max);
+        $max = \DB::table('tweets')->max('favorite_count');
+        var_dump($max);
+
+        $t = \DB::table('tweets')->first();
 
         return view('home.index', ['lists' => []]);
     }
