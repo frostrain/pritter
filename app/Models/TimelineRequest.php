@@ -5,8 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use DB;
 use Storage;
+use App\Interfaces\TweetCollection;
 
-class TimelineRequest extends Model
+class TimelineRequest extends Model implements TweetCollection
 {
     protected $fillable = [
         "disk", "path", "since_id", "max_id", "start_id", "end_id", "count",
@@ -16,10 +17,28 @@ class TimelineRequest extends Model
     /**
      * @return array
      */
-    public function getResponseData()
+    public function getTweets()
     {
         $jsonStr = Storage::disk($this->disk)->get($this->path);
         return json_decode($jsonStr, true, 512, JSON_BIGINT_AS_STRING);
+    }
+    /**
+     * @return bool
+     */
+    public function isImported()
+    {
+        return $this->is_imported;
+    }
+
+    /**
+     * 设置导入状态, 这个方法需要立即持久化.
+     * @param bool $val
+     * @return void
+     */
+    public function setImport($val)
+    {
+        $this->is_imported = $val;
+        $this->save();
     }
 
     /**

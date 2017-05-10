@@ -44,7 +44,7 @@ class CreateTimelineRequestsTable extends Migration
             $table->index('end_id');
             // 用于检查遗漏
             $table->index('is_covered');
-            // 用于导入
+            // 用于查找未导入的文件
             $table->index(['is_imported', 'count', 'end_id']);
         });
     }

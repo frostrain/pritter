@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Storage;
-use App\Jobs\ImportTimelineResponse;
+use App\Jobs\ImportTweets;
 use App\Jobs\GetTweetsTranslation;
 use App\Models\Tweet;
 use TranslatorApi;
@@ -36,7 +36,7 @@ class HomeController extends Controller
 
         $data = json_decode($json, true, 512, JSON_BIGINT_AS_STRING);
 
-        dispatch(new ImportTimelineResponse($data));
+        dispatch(new ImportTweets($data));
 
         return view('home.index', ['lists' => []]);
     }

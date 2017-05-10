@@ -3,11 +3,13 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Frostrain\Console\CommandWithArrayInputsTrait;
 use Storage;
 use File;
 use App\Models\TimelineRequest;
-use App\Jobs\ImportTimelineResponse;
-use Frostrain\Console\CommandWithArrayInputsTrait;
+use App\Jobs\ImportTweets;
+use App\Jobs\GetTimelineRequestFromFile;
+
 
 class ImportHomeTimeline extends Command
 {
@@ -60,9 +62,19 @@ class ImportHomeTimeline extends Command
     {
         $requests = TimelineRequest::getUnimportedRequest($count);
         foreach ($requests as $req) {
-            $this->info("start import: [{$req->disk}] {$req->path}");
+            $this->dispatchImportJob($req);
+        }
+    }
+
+    protected function dispatchImportJob($request)
+    {
+        $file = "[{$request->disk}] {$request->path}";
+        if ($request->isImported()) {
+            $this->info("$file - already imported, skipped.");
+        } else {
+            $this->info("start import: $file");
             $start = microtime(true);
-            dispatch(new ImportTimelineResponse(null, $req));
+            dispatch(new ImportTweets($request));
             $end = microtime(true);
             $seconds = sprintf('%.2f', $end - $start);
             $this->info("import success, used time: $seconds");
@@ -73,8 +85,7 @@ class ImportHomeTimeline extends Command
     {
         foreach ($files as $f) {
             // TODO: 读取文件
-            $data = [];
-            dispatch(new ImportTimelineResponse($data));
+            // dispatch(new ImportTweets());
         }
     }
 
@@ -83,24 +94,26 @@ class ImportHomeTimeline extends Command
         $localDiskRoot = realpath(config('filesystems.disks.local.root'));
         $disk = 'local';
 
-        $r = Storage::disk(null)->directories();
-        var_dump($r);
-        return ;
-
+        // $r = Storage::disk(null)->directories();
 
         foreach ($dirs as $dir) {
             $files = File::files($dir);
+            if (count($files) == 0) {
+                $this->error("empty dir [$dir] skipped.");
+                continue;
+            }
             foreach ($files as $file) {
                 $real = realpath($file);
+                // 判断是否为local存储下的文件
                 if (strstr($real, $localDiskRoot)) {
-                    $path = str_replace('\\', '/', substr($real, strlen($localDiskRoot) + 1));
-                    // TODO
+                    $path = substr($real, strlen($localDiskRoot) + 1);
+                    if (Storage::disk('local')->exists($path)) {
+                        $job = new GetTimelineRequestFromFile($disk, $path);
+                        $request = $job->handle();
+                        $this->dispatchImportJob($request);
+                    }
                 }
             }
-
-            // TODO: 读取文件
-            $data = [];
-            dispatch(new ImportTimelineResponse($data));
         }
     }
 }
