@@ -7,5 +7,9 @@
 - 推特 api key
 - 可能需要代理 (用于访问推特api, 你懂的)
 - 如果是 mysql 数据库需要 5.5 以上, 因为需要支持 utf8mb4 编码
-- 推荐在 64bit 的系统上运行, bigInt 需要 64bit 的系统才能正常工作
-- 特别注意, 如果是 windows, 还需要 php 7.0 或以上才能支持 bigInt
+* 注意
+- 虽然程序中已经尽力避免使用到 bigInt, 不过还是推荐在 64bit 的系统上运行, bigInt 需要 64bit 的系统才能正常工作
+- 如果是 windows, 还需要 php 7.0 或以上才能支持 bigInt
+- 即使 PHP 不支持 64bit , 应该也能正常工作...
+* license
+MIT

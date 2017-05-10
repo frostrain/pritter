@@ -2,6 +2,9 @@
 
 use Illuminate\Foundation\Inspiring;
 // use Twitter;
+use App\Jobs\GetTimelineRequestFromFile as G;
+
+use App\Jobs\ImportTimelineResponse;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,7 +23,14 @@ Artisan::command('inspire', function () {
 
 
 Artisan::command('pri:pu', function () {
+    $path = '2017/05/09/home_timeline_'.time().'_'.str_random(6).'.json';
+    $r = G::getCreateTimeFromPath($path);
+    var_dump((string)$r);
 
+    $t = microtime(true);
+    $t = sprintf('%.2f', $t);
+    var_dump($t);
+    // new ImportTimelineResponse(null, '1');
 });
 
 Artisan::command('pri:info', function () {

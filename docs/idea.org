@@ -10,22 +10,19 @@
 - [-] TwitterUser 模型
 - [-] Media 模型?
 - [-] TimelineRequest
-- [-] 采集
-  + [X] twitter api 采集
-  + [ ] twitter media 下载
-  + [ ] 非 twitter 的 media 下载?
 - [ ] 定时任务
-  + [ ] 采集 twitter api (home_timeline)
-  + [ ] 检查是否有范围遗漏
-  + [ ] 采集 旧数据 (home_timeline)
-  + [ ] 下载 media
-  + [ ] 获取机器翻译
+- [ ] 命令 (command)
+  + [X] cmd: 获取最新的推文 (pri:latest-home-timeline)
+  + [ ] cmd: 检查是否有范围遗漏, 并获取数据
+  + [X] cmd: 获取旧推文 (pri:past-home-timeline)
+  + [-] cmd: 获取 api 请求速率限制 (pri:rate-limit)
+  + [ ] cmd: 下载 (extended_entities中的) media (pri:tweet-media)
+  + [ ] cmd: 其他 media 下载 (pri:other-media)
+  + [ ] cmd: 获取机器翻译 (pri:translate)
+  + [ ] cmd: 更新 关注的用户 的信息.
+  + [ ] cmd: 获取 statuses/user_timeline
+- [ ] 其他任务
+  + [ ] cmd: 从文件中导入数据, 需要创建 TimelineRequest 模型对象, 并保留文件到 'local' 存储中
 - [ ] 翻译
-** 定时任务
-- 获取最新的 首页推特(订阅推特)
-  每两分钟请求一次 GET statuses/home_timeline 来获取 当前用户的首页推特
-  请求之前可以先用 GET application/rate_limit_status 来检查 请求速率限制
-- 获取以前的 订阅推特
-- 获取 趋势?
 * 前端
 * 计划

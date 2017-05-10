@@ -4,17 +4,20 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Storage;
+use File;
 use App\Models\TimelineRequest;
-use App\Jobs\ParseTweetResponse;
+use App\Jobs\ImportTimelineResponse;
+use Frostrain\Console\CommandWithArrayInputsTrait;
 
 class ImportHomeTimeline extends Command
 {
+    use CommandWithArrayInputsTrait;
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'pri:import-home-timeline {--c|count=3} {--f|file=}';
+    protected $signature = 'pri:import-home-timeline {--c|count=3} {--f|file=} {--d|dir=}';
 
     /**
      * The console command description.
@@ -41,14 +44,13 @@ class ImportHomeTimeline extends Command
     public function handle()
     {
         $count = $this->option('count');
-        $file = $this->option('file');
-        if (strstr($file, ',')) {
-            $file = explode(',', $file);
-        }
+        $files = $this->parseArrayInput($this->option('file'));
+        $dirs = $this->parseArrayInput($this->option('dir'));
 
-        // 如果 $file 存在(本地文件), 则直接导入文件
-        if ($file) {
-            $this->importFromFiles($file);
+        // 如果 $files 或 $dirs 存在(本地文件), 则直接导入文件
+        if ($files || $dirs) {
+            $this->importFromFiles($files);
+            $this->importFromDirs($dirs);
         } else {
             $this->importFromRequests($count);
         }
@@ -57,26 +59,48 @@ class ImportHomeTimeline extends Command
     protected function importFromRequests($count)
     {
         $requests = TimelineRequest::getUnimportedRequest($count);
-        foreach ($requests as $r) {
-            $json = Stroage::disk($r->disk)->get($r->path);
-            $data = json_decode($json, true, 512, JSON_BIGINT_AS_STRING);
-            dispatch(new ParseTweetResponse($data));
+        foreach ($requests as $req) {
+            $this->info("start import: [{$req->disk}] {$req->path}");
+            $start = microtime(true);
+            dispatch(new ImportTimelineResponse(null, $req));
+            $end = microtime(true);
+            $seconds = sprintf('%.2f', $end - $start);
+            $this->info("import success, used time: $seconds");
         }
     }
 
     protected function importFromFiles($files)
     {
-        if ($files && !is_array($files)) {
-            $files = func_get_args();
-        }
-        if (!is_array($files)) {
-            $this->error('--file 参数错误! 命令终止!');
-            return;
-        }
-        foreach ($file as $f) {
+        foreach ($files as $f) {
             // TODO: 读取文件
             $data = [];
-            dispatch(new ParseTweetResponse($data));
+            dispatch(new ImportTimelineResponse($data));
+        }
+    }
+
+    protected function importFromDirs($dirs)
+    {
+        $localDiskRoot = realpath(config('filesystems.disks.local.root'));
+        $disk = 'local';
+
+        $r = Storage::disk(null)->directories();
+        var_dump($r);
+        return ;
+
+
+        foreach ($dirs as $dir) {
+            $files = File::files($dir);
+            foreach ($files as $file) {
+                $real = realpath($file);
+                if (strstr($real, $localDiskRoot)) {
+                    $path = str_replace('\\', '/', substr($real, strlen($localDiskRoot) + 1));
+                    // TODO
+                }
+            }
+
+            // TODO: 读取文件
+            $data = [];
+            dispatch(new ImportTimelineResponse($data));
         }
     }
 }

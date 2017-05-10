@@ -4,13 +4,23 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use DB;
+use Storage;
 
 class TimelineRequest extends Model
 {
     protected $fillable = [
         "disk", "path", "since_id", "max_id", "start_id", "end_id", "count",
-        "is_success", "is_covered", "is_imported", "error", 'file_size',
+        "return_count", "is_covered", "is_imported", 'file_size',
     ];
+
+    /**
+     * @return array
+     */
+    public function getResponseData()
+    {
+        $jsonStr = Storage::disk($this->disk)->get($this->path);
+        return json_decode($jsonStr, true, 512, JSON_BIGINT_AS_STRING);
+    }
 
     /**
      * 返回用于 最新的home_timeline 请求的 since_id.
@@ -45,8 +55,8 @@ class TimelineRequest extends Model
      */
     public static function getUnimportedRequest($count, $skip = 0)
     {
-        return self::where('is_success', true)->where('is_imported', false)
-            ->where('count', '>', '0')->skip(0)->take($count)->get();
+        return self::where('is_imported', false)->where('count', '>', '0')
+            ->orderBy('end_id', 'asc')->skip(0)->take($count)->get();
     }
 
     /**
@@ -55,7 +65,7 @@ class TimelineRequest extends Model
      */
     public static function getUnimportedCounts()
     {
-        return self::where('is_success', true)->where('is_imported', false)
+        return self::where('is_imported', false)
             ->where('count', '>', '0')->count();
     }
 }

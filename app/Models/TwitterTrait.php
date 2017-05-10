@@ -35,8 +35,11 @@ trait TwitterTrait
      */
     public function setCreatedAtAttribute($time)
     {
-        // created_at 保留为 字符串
-        $this->attributes['created_at'] = (new Carbon($time))->__toString();
+        if ($time instanceof Carbon){
+            $this->attributes['created_at'] = $time;
+        } else {
+            $this->attributes['created_at'] = new Carbon($time);
+        }
     }
 
     /**

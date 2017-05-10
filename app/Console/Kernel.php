@@ -8,6 +8,7 @@ use App\Console\Commands\RequestHomeTimeline;
 use App\Console\Commands\RequestLatestHomeTimeline;
 use App\Console\Commands\RequestPastHomeTimeline;
 use App\Console\Commands\RequestRateLimit;
+use App\Console\Commands\ImportHomeTimeline;
 
 class Kernel extends ConsoleKernel
 {
@@ -21,6 +22,7 @@ class Kernel extends ConsoleKernel
         RequestLatestHomeTimeline::class,
         RequestPastHomeTimeline::class,
         RequestRateLimit::class,
+        ImportHomeTimeline::class,
     ];
 
     /**
