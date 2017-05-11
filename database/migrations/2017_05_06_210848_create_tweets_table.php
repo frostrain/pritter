@@ -41,6 +41,8 @@ class CreateTweetsTable extends Migration
             $table->timestamps();
 
             $table->primary('id');
+            // 通过用户查找 推文
+            $table->index('twitter_user_id');
         });
     }
 

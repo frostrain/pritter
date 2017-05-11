@@ -24,15 +24,6 @@ class Media extends Model implements Downloadable
         return $this->origin_url;
     }
 
-    /**
-     * 获取用来 排序 的字段. 用于优先下载.
-     * @return array
-     */
-    protected static function getPriorityOrderBy()
-    {
-        return ['field' => 'id', 'direction' => 'desc'];
-    }
-
     public function setOriginUrlAttribute($url)
     {
         $old = array_get($this->attributes, 'origin_url');

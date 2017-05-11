@@ -6,11 +6,14 @@ use App\Interfaces\Downloadable;
 use Storage;
 
 /**
- * 下载推特上的多媒体文件.
- * 图片/视频封面图 等
+ * 下载文件.
+ * 比如退特的 图片/视频封面图 等.
  */
-class DownloadTweetMedia
+class DownloadFile
 {
+    /**
+     * @var \App\Interfaces\Downloadable
+     */
     protected $entity;
     /**
      * @var string

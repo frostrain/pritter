@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\TwitterTrait;
 use App\Models\Media;
+use App\Models\Tweet;
 
 class TwitterUser extends Model
 {
@@ -17,6 +18,11 @@ class TwitterUser extends Model
         'favourites_count', 'followers_count', 'friends_count', 'created_at',
         'profile_image_url', 'profile_banner_url', 'profile_background_image_url',
     ];
+
+    public function tweets()
+    {
+        return $this->hasMany(Tweet::class, 'twitter_user_id', 'id');
+    }
 
     public function profile_image()
     {

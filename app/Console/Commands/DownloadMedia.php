@@ -3,24 +3,24 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Models\TweetMedia;
+use App\Models\Media;
 use App\Jobs\DownloadFile;
 
-class DownloadTweetMedia extends Command
+class DownloadMedia extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'pri:download-tweet-media {--c|count=5}';
+    protected $signature = 'pri:download-media {--c|count=5}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Download <fg=yellow>tweet media</fg=yellow>: tweet images, etc';
+    protected $description = 'Download <fg=yellow>media</fg=yellow>: user profile img, etc';
 
     /**
      * Create a new command instance.
@@ -41,7 +41,7 @@ class DownloadTweetMedia extends Command
     {
         $disk = config('pritter.default_public_disk');
         $count = $this->option('count');
-        $collection = TweetMedia::getUndownloaded($count);
+        $collection = Media::getUndownloaded($count);
 
         $finded = $collection->count();
 

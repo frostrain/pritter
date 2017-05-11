@@ -62,10 +62,13 @@ trait MediaTrait
     public function getUrlAttribute()
     {
         if ($this->disk && $this->path) {
-            return Storage::disk($this->disk)->url($this->path);
-        } else {
-            return '/img/default_img.gif';
+            try {
+                return Storage::disk($this->disk)->url($this->path);
+            } catch (\Exception $e) {
+                // TODO ...
+            }
         }
+        return '/img/default_img.gif';
     }
 
     /**
@@ -99,7 +102,7 @@ trait MediaTrait
         if (isset(self::$mediaType[$typeName])) {
             return self::$mediaType[$typeName];
         } else {
-            throw new \InvalidArgumentExcepttion("不合法的类型: $typeName");
+            throw new \InvalidArgumentException("不合法的类型: $typeName");
         }
     }
 }
