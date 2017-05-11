@@ -16,11 +16,12 @@
   + [ ] cmd: 检查是否有范围遗漏, 并获取数据
   + [X] cmd: 获取旧推文 (pri:past-home-timeline)
   + [-] cmd: 获取 api 请求速率限制 (pri:rate-limit)
-  + [ ] cmd: 下载 (extended_entities中的) media (pri:tweet-media)
+  + [X] cmd: 下载 (extended_entities中的) media (pri:tweet-media)
   + [ ] cmd: 其他 media 下载 (pri:other-media)
   + [ ] cmd: 获取机器翻译 (pri:translate)
   + [ ] cmd: 更新 关注的用户 的信息.
   + [ ] cmd: 获取 statuses/user_timeline
+  + [ ] 使用 progress bar 来显示任务进度
 - [ ] 其他任务
   + [ ] cmd: 从文件中导入数据, 需要创建 TimelineRequest 模型对象, 并保留文件到 'local' 存储中
 - [ ] 翻译

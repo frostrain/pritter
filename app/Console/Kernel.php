@@ -9,6 +9,7 @@ use App\Console\Commands\RequestLatestHomeTimeline;
 use App\Console\Commands\RequestPastHomeTimeline;
 use App\Console\Commands\RequestRateLimit;
 use App\Console\Commands\ImportHomeTimeline;
+use App\Console\Commands\DownloadTweetMedia;
 
 class Kernel extends ConsoleKernel
 {
@@ -23,6 +24,7 @@ class Kernel extends ConsoleKernel
         RequestPastHomeTimeline::class,
         RequestRateLimit::class,
         ImportHomeTimeline::class,
+        DownloadTweetMedia::class,
     ];
 
     /**

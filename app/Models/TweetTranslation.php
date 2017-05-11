@@ -12,13 +12,4 @@ class TweetTranslation extends Model
     protected $fillable = [
         'text', 'lang', 'source', 'tweet_id',
     ];
-
-    /**
-     * 对象内保存为字符串的字段数组.
-     * @return array
-     */
-    public function getBigIntFields()
-    {
-        return ['tweet_id'];
-    }
 }

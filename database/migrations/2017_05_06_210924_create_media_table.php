@@ -15,16 +15,21 @@ class CreateMediaTable extends Migration
     {
         Schema::create('media', function (Blueprint $table) {
             $table->increments('id');
-            $table->bigInteger('tweet_id')->unsigned();
-
             $table->string('origin_url');
+
+            // owner_id 和 type 组成了关联不同模型的关键
+            $table->bigInteger('owner_id')->unsigned();
             $table->tinyInteger('type')->unsigned();
 
-            // 尺寸, kb 取整?
+            $table->boolean('is_handled')->unsigned()->default(0);
+            // 尺寸
             $table->integer('size')->unsigned()->default(0);
             $table->string('disk')->nullable();
             $table->string('path')->nullable();
             $table->timestamps();
+
+            $table->index('is_handled');
+            $table->index(['owner_id', 'type']);
         });
     }
 

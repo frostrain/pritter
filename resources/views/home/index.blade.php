@@ -6,40 +6,22 @@
       <!-- Default panel contents -->
       <div class="panel-heading">推特</div>
 
+      {{ $lists->render() }}
+
       <!-- List group -->
       <ul class="list-group">
         @foreach ($lists as $tweet)
           <li class="list-group-item">
             <div class="media">
-              @if (isset($tweet->retweeted_status))
+              @if ($tweet->isRetweet())
+                {{-- 转推 --}}
                 <div>
-                  {{ $tweet->user->name }} 转推了
+                  {{ $tweet->user->name }} {{ $tweet->created_at }} 转推了
                 </div>
-                <div class="media-left media-middle">
-                  <a href="#">
-                    <img class="media-object"  alt="...">
-                  </a>
-                </div>
-                <div class="media-body">
-                  <h4 class="media-heading">
-                    {{ $loop->index }} :
-                    {{ $tweet->retweeted_status->user->name }} {{ '@'.$tweet->retweeted_status->user->screen_name }} - {{ $tweet->retweeted_status->created_at }}
-                  </h4>
-                  {{ $tweet->retweeted_status->text }}
-                </div>
+                @include('home._tweet-card', ['tweet' => $tweet->retweeted_status])
               @else
-                <div class="media-left media-middle">
-                  <a href="#">
-                    <img class="media-object"  alt="...">
-                  </a>
-                </div>
-                <div class="media-body">
-                  <h4 class="media-heading">
-                    {{ $loop->index }} :
-                    {{ $tweet->user->name }} {{ '@'.$tweet->user->screen_name }} - {{ $tweet->created_at }}
-                  </h4>
-                  {{ $tweet->text }}
-                </div>
+                {{-- 不是转推 --}}
+                @include('home._tweet-card', ['tweet' => $tweet])
               @endif
             </div>
             </li>

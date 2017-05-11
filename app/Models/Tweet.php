@@ -27,22 +27,12 @@ class Tweet extends Model
     protected $entities;
 
     /**
-     * 对象内保存为字符串的字段数组.
-     * @return array
-     */
-    public function getBigIntFields()
-    {
-        return ['id', 'in_reply_to_status_id', 'quoted_id', 'retweeted_id', 'twitter_user_id'];
-    }
-
-    /**
      * @return bool
      */
     public function hasImage()
     {
         // TODO
     }
-
     /**
      * 设置 truncated 属性.
      * 将传入的 $val 转换为 0 或 1.
@@ -69,7 +59,7 @@ class Tweet extends Model
      */
     public function isRetweet()
     {
-        return $this->retweeted_id ? true : false;
+        return $this->retweeted_id && $this->retweeted_status ? true : false;
     }
 
     /**
@@ -78,7 +68,7 @@ class Tweet extends Model
      */
     public function hasQuote()
     {
-        return $this->quoted_id ? true : false;
+        return $this->quoted_id && $this->quoted_status ? true : false;
     }
 
     public function translations()
@@ -140,6 +130,11 @@ class Tweet extends Model
         $this->entities = $entities;
     }
 
+    /**
+     * 处理返回的数据中的 extended_entities 字段.
+     * 注意, 这个 $entities 应该是不能修改的. 所以我们只需要创建, 不用更新.
+     * @param array $entities
+     */
     public function setExtendedEntitiesAttribute($entities)
     {
         if (!$this->exists) {

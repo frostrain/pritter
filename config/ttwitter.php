@@ -16,7 +16,8 @@ return [
 
     // 传给 tmhOAuth 的配置
     'tmhOAuth' => [
-        "curl_ssl_verifypeer" => env('TWITTER_CURL_SSL_VERIFYPEER', true),
+        // 部分代理可能需要关闭 curl_ssl_verifypeer 验证..
+        "curl_ssl_verifypeer" => env('TWITTER_CURL_SSL_VERIFY', true),
         "curl_proxy" => env("TWITTER_CURL_PROXY", false),
     ],
 

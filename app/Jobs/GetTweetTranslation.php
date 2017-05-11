@@ -8,7 +8,7 @@ use App\Models\TweetTranslation;
 use Stichoza\GoogleTranslate\TranslateClient;
 use ReflectionClass;
 
-class GetTweetsTranslation
+class GetTweetTranslation
 {
     /**
      * 需要处理的 tweet 的 id 数组

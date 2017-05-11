@@ -22,7 +22,8 @@
     @endforeach
     </div>
   @endif
-  @if ($tweet->quoted_status)
+
+  @if ($tweet->hasQuote())
     <blockquote>
       <div class="media-left media-middle">
         <a href="#">

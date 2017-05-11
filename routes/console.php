@@ -36,4 +36,5 @@ Artisan::command('pri:pu', function () {
 Artisan::command('pri:info', function () {
     $max = ini_get('max_execution_time');
     $this->info('max execution time: '.$max);
+
 });

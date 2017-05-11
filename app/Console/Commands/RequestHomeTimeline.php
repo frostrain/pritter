@@ -68,13 +68,13 @@ class RequestHomeTimeline extends Command
             // 时间戳放在前面是为了好排序...
             $file = 'home_timeline_'.time().'_'.str_random(6).'.json';
             $path = $dir.$file;
-            $disk = 'local';
+            $disk = config('pritter.default_disk');
             // 即使返回的是空数组也将其写入文件...
             Storage::disk($disk)->put($path, $response);
 
             $job = new GetTimelineRequestFromFile($disk, $path, $options, false);
             $request = $job->handle();
-            $this->info("done:");
+            $this->info("done!");
             $this->info("new count: {$request->return_count}");
             $this->info("is covered: {$request->is_covered}");
             if ($request->return_count) {

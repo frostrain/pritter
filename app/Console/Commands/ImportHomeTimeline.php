@@ -19,7 +19,7 @@ class ImportHomeTimeline extends Command
      *
      * @var string
      */
-    protected $signature = 'pri:import-home-timeline {--c|count=3} {--f|file=} {--d|dir=}';
+    protected $signature = 'pri:import-home-timeline {--c|count=3} {--f|file=} {--d|dir=} {--disk=} {--r|root-dir=}';
 
     /**
      * The console command description.
@@ -27,6 +27,11 @@ class ImportHomeTimeline extends Command
      * @var string
      */
     protected $description = 'Import home timeline from file';
+    protected $disk;
+    /**
+     * @var string
+     */
+    protected $diskName;
 
     /**
      * Create a new command instance.
@@ -45,7 +50,13 @@ class ImportHomeTimeline extends Command
      */
     public function handle()
     {
+        // 从数据库中搜索request来导入
         $count = $this->option('count');
+        // 指定 storage 的 disk
+        $this->diskName = $this->option('disk') ?: config('pritter.default_disk') ;
+        $this->disk = Storage::disk($this->diskName);
+        // 这个选项存在表示从 $rootDir 下(recursive)找到的所有有效的文件导入
+        $rootDir = $this->option('root-dir');
         $files = $this->parseArrayInput($this->option('file'));
         $dirs = $this->parseArrayInput($this->option('dir'));
 
@@ -61,6 +72,10 @@ class ImportHomeTimeline extends Command
     protected function importFromRequests($count)
     {
         $requests = TimelineRequest::getUnimportedRequest($count);
+        if ($requests->isEmpty()) {
+            $this->info('Nothing to import, skipped.');
+            return;
+        }
         foreach ($requests as $req) {
             $this->dispatchImportJob($req);
         }
@@ -84,15 +99,22 @@ class ImportHomeTimeline extends Command
     protected function importFromFiles($files)
     {
         foreach ($files as $f) {
-            // TODO: 读取文件
-            // dispatch(new ImportTweets());
+            // TODO
         }
+    }
+
+    /**
+     * @param string $root
+     */
+    protected function importFromDirectoryRecursively($root)
+    {
+        // TODO
     }
 
     protected function importFromDirs($dirs)
     {
+        // TODO: 重构这个方法
         $localDiskRoot = realpath(config('filesystems.disks.local.root'));
-        $disk = 'local';
 
         // $r = Storage::disk(null)->directories();
 
@@ -107,8 +129,8 @@ class ImportHomeTimeline extends Command
                 // 判断是否为local存储下的文件
                 if (strstr($real, $localDiskRoot)) {
                     $path = substr($real, strlen($localDiskRoot) + 1);
-                    if (Storage::disk('local')->exists($path)) {
-                        $job = new GetTimelineRequestFromFile($disk, $path);
+                    if ($this->disk->exists($path)) {
+                        $job = new GetTimelineRequestFromFile($this->diskName, $path);
                         $request = $job->handle();
                         $this->dispatchImportJob($request);
                     }

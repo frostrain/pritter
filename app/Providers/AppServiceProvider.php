@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Schema;
+use GuzzleHttp\Client;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -25,6 +26,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->singleton('guzzle.twitter', function ($app) {
+            $options = [
+                'proxy' => env("TWITTER_CURL_PROXY", false),
+                'verify' => env('TWITTER_CURL_SSL_VERIFY', true),
+            ];
+
+            return new Client($options);
+        });
     }
 }

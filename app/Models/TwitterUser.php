@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\TwitterTrait;
+use App\Models\Media;
 
 class TwitterUser extends Model
 {
@@ -17,9 +18,10 @@ class TwitterUser extends Model
         'profile_image_url', 'profile_banner_url', 'profile_background_image_url',
     ];
 
-    public function getBigIntFields()
+    public function profile_image()
     {
-        return ['id'];
+        $type = Media::getTypeValue('user_profile_image');
+        return $this->hasOne(Media::class, 'owner_id', 'id')->where('type', $type);
     }
 
     public function getProfileImageUrlAttribute()
@@ -30,7 +32,21 @@ class TwitterUser extends Model
 
     public function setProfileImageUrlAttribute($url)
     {
+        if (!$url) {
+            return;
+        }
+        $data = [
+            'origin_url' => $url,
+            'type' => 'user_profile_image',
+            'owner_id' => $this->id,
+        ];
 
+        if ($media = $this->profile_image){
+            $media->fill($data);
+        } else {
+            $media = (new Media($data));
+        }
+        $media->save();
     }
 
     public function setProfileBannerUrlAttribute($url)
