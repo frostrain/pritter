@@ -21,7 +21,8 @@ class CreateMediaTable extends Migration
             $table->bigInteger('owner_id')->unsigned();
             $table->tinyInteger('type')->unsigned();
 
-            $table->boolean('is_handled')->unsigned()->default(0);
+            $table->boolean('is_handled')->default(0);
+            $table->boolean('is_failed')->default(0);
             // 尺寸
             $table->integer('size')->unsigned()->default(0);
             $table->string('disk')->nullable();

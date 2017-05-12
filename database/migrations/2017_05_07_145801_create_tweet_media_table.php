@@ -22,7 +22,8 @@ class CreateTweetMediaTable extends Migration
             $table->string('media_url');
             $table->tinyInteger('type')->unsigned();
 
-            $table->boolean('is_handled')->unsigned()->default(0);
+            $table->boolean('is_handled')->default(0);
+            $table->boolean('is_failed')->default(0);
             // 文件尺寸
             $table->integer('size')->unsigned()->default(0);
             $table->string('disk')->nullable();

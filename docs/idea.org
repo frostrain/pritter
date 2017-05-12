@@ -20,13 +20,16 @@
   + [X] cmd: 下载 (extended_entities中的) media (pri:tweet-media)
   + [-] cmd: 其他 media 下载 (pri:other-media)
   + [ ] cmd: 获取机器翻译 (pri:translate)
-  + [ ] cmd: 更新 关注的用户 的信息.
+  + [ ] cmd: 获取/更新 关注的用户 的信息.
+  + [ ] cmd: 获取 用户自身(api key 用户) 的信息.
   + [ ] cmd: 获取 statuses/user_timeline
   + [ ] 使用 progress bar 来显示任务进度
-  + [-] cmd: 从文件中导入数据, 需要创建 TimelineRequest 模型对象, 并保留文件到 'local' 存储中
+  + [-] cmd: 从文件中导入数据, 需要创建 TimelineRequest 模型对象, 并保留文件到 存储系统 中
+  + [-] cmd: 从文件系统中关联已经存在的图片
 - [ ] 记录 timeline 请求状况
   + statuses/home_timeline 的旧数据是否已经请求完(800条左右)
   + statuses/user_timeline 的旧数据是否已经请求完(3200条左右)
+- [ ] emoji 显示问题
 - [ ] 翻译
 * 前端
 * 计划

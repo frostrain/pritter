@@ -19,17 +19,23 @@ class DownloadFile
      * @var string
      */
     protected $disk;
+    /**
+     * @var string
+     */
+    protected $clientName;
 
     /**
      * Create a new job instance.
      * @param \App\Interfaces\Downloadable $entity
      * @param string $disk
+     * @param string $clientName
      * @return void
      */
-    public function __construct(Downloadable $entity, $disk)
+    public function __construct(Downloadable $entity, $disk, $clientName)
     {
         $this->entity = $entity;
         $this->disk = $disk;
+        $this->clientName = $clientName;
     }
 
     /**
@@ -41,13 +47,23 @@ class DownloadFile
         $this->downloadEntity($this->entity, $this->disk);
      }
 
+    /**
+     * 如果下载失败, 这里会抛出异常.
+     */
     protected function downloadEntity($entity, $disk)
     {
         $url = $entity->getDownloadUrl();
-        $contents = $this->downloadContents($url);
-        $path = parse_url($url, PHP_URL_PATH);
-        Storage::disk($disk)->put($path, $contents);
-        $entity->setFilePath($disk, $path);
+        try {
+            $contents = $this->downloadContents($url);
+            $path = parse_url($url, PHP_URL_PATH);
+            Storage::disk($disk)->put($path, $contents);
+            $entity->setFilePath($disk, $path);
+        } catch (\Exception $e) {
+            // TODO: 重试?
+            // 注意, 即使 404 貌似也有可能重试成功
+            $entity->setFailed();
+            throw $e;
+        }
     }
 
     /**
@@ -56,7 +72,7 @@ class DownloadFile
      */
     protected function downloadContents($url)
     {
-        $client = app('guzzle.twitter');
+        $client = app($this->clientName);
         $response = $client->get($url);
         return $contents = (string) $response->getBody();
     }

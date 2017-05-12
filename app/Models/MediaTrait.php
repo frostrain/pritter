@@ -11,20 +11,59 @@ trait MediaTrait
      * @return array ['field' => '..', 'direction' => '..']
      */
     protected static function getPriorityOrderBy(){
-        return ['id' , 'desc'];
+        return ['field' => 'id' , 'direction' => 'desc'];
+    }
+
+    /**
+     * 标记为下载失败.
+     */
+    public function setFailed()
+    {
+        $this->is_handled = true;
+        $this->is_failed = true;
+        $this->save();
     }
     /**
      * 返回未下载的 TweetMedia 集合.
-     * @param int $count
+     * @param int $count -1 表示不限制返回数目.
      * @param int $skip
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public static function getUndownloaded($count, $skip = 0)
     {
         $sort = self::getPriorityOrderBy();
+
+        // 返回所有
+        if ($count === -1) {
+            // 注意, skip() 必须与 take() 一起使用, 否则生成的 sql 无效..
+            return self::where('is_handled', false)
+                ->orderBy($sort['field'], $sort['direction'])->get();
+        }
+
         return self::where('is_handled', false)
             ->orderBy($sort['field'], $sort['direction'])
-            ->skip(0)->take($count)->get();
+            ->skip($skip)->take($count)->get();
+    }
+
+    /**
+     * 尝试确认本地文件是否存在, 如果存在, 直接关联.
+     * @param string $disk
+     * @return bool
+     */
+    public function tryToFindFileFromStorage($disk = null)
+    {
+        $url = $this->getDownloadUrl();
+        $path = parse_url($url, PHP_URL_PATH);
+        $disk = $disk ?: config('pritter.default_public_disk');
+        if (Storage::disk($disk)->exists($path)) {
+            $this->path = $path;
+            $this->disk = $disk;
+            $this->size = Storage::disk($disk)->size($path);
+            $this->is_handled = true;
+            $this->save();
+            return true;
+        }
+        return false;
     }
 
     /**

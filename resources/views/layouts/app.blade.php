@@ -14,27 +14,16 @@
     <!--[if lt IE 9]>
          <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
          <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
-         <![endif]-->
 
+         <![endif]-->
+    <link href="https://cdn.bootcss.com/fancybox/3.0.47/jquery.fancybox.min.css" rel="stylesheet">
   </head>
   <body>
-    <nav class="navbar navbar-inverse">
+    <nav class="navbar navbar-default">
       <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                  data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#">Project name</a>
-        </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
+            <li class=""><a href="#">首页</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -46,6 +35,7 @@
 
     <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdn.bootcss.com/fancybox/3.0.47/jquery.fancybox.min.js"></script>
     @stack('foot')
   </body>
 </html>

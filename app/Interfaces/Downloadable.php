@@ -15,4 +15,6 @@ interface Downloadable
      * @param string $path
      */
     public function setFilePath($disk, $path);
+
+    public function setFailed();
 }

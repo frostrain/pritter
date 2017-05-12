@@ -22,19 +22,19 @@ class CreateTwitterUsersTable extends Migration
             $table->string('description')->nullable();
             $table->string('url')->nullable();
 
+            // (api key 的用户)是否正在关注该用户
+            $table->boolean('following')->default(0);
             $table->integer('statuses_count')->unsigned()->default(0);
             $table->integer('favourites_count')->unsigned()->default(0);
             $table->integer('followers_count')->unsigned()->default(0);
             $table->integer('friends_count')->unsigned()->default(0);
 
-            // 这些图片对应 Media 模型, 而不是 TweetMedia 模型
-            $table->integer('profile_image_id')->unsigned()->nullable();
-            $table->integer('profile_banner_id')->unsigned()->nullable();
-            $table->integer('profile_background_image_id')->unsigned()->nullable();
+            $table->boolean('profile_background_tile')->default(0);
 
             $table->timestamps();
 
             $table->primary('id');
+            $table->index('following');
         });
     }
 

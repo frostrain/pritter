@@ -32,6 +32,7 @@ class CreateTweetsTable extends Migration
             $table->text('entities')->nullable();
 
             $table->bigInteger('twitter_user_id')->unsigned();
+            $table->boolean('is_following_author')->default(0);
 
             $table->integer('retweet_count')->unsigned()->default(0);
             $table->integer('favorite_count')->unsigned()->default(0);
@@ -43,6 +44,8 @@ class CreateTweetsTable extends Migration
             $table->primary('id');
             // 通过用户查找 推文
             $table->index('twitter_user_id');
+            // 用于显示 已关注的人 的推
+            $table->index('is_following_author');
         });
     }
 

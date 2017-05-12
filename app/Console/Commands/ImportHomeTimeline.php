@@ -19,7 +19,7 @@ class ImportHomeTimeline extends Command
      *
      * @var string
      */
-    protected $signature = 'pri:import-home-timeline {--c|count=3} {--f|file=} {--d|dir=} {--disk=} {--r|root-dir=}';
+    protected $signature = 'pri:import-home-timeline {--c|count=3} {--f|file=} {--disk=} {--r|root-dir=}';
 
     /**
      * The console command description.
@@ -58,12 +58,11 @@ class ImportHomeTimeline extends Command
         // 这个选项存在表示从 $rootDir 下(recursive)找到的所有有效的文件导入
         $rootDir = $this->option('root-dir');
         $files = $this->parseArrayInput($this->option('file'));
-        $dirs = $this->parseArrayInput($this->option('dir'));
 
-        // 如果 $files 或 $dirs 存在(本地文件), 则直接导入文件
-        if ($files || $dirs) {
+        if ($rootDir) {
+            $this->importFromDirectoryRecursively($rootDir, $this->diskName);
+        } elseif ($files) {
             $this->importFromFiles($files);
-            $this->importFromDirs($dirs);
         } else {
             $this->importFromRequests($count);
         }
@@ -103,39 +102,40 @@ class ImportHomeTimeline extends Command
         }
     }
 
-    /**
-     * @param string $root
-     */
-    protected function importFromDirectoryRecursively($root)
+    protected function isValidHomeTimelineName($path)
     {
-        // TODO
+        return preg_match('/home_timeline_\d+?_\w+?.json$/', $path) ? true : false;
     }
 
-    protected function importFromDirs($dirs)
+    /**
+     * @param string $root
+     * @param string $diskName
+     */
+    protected function importFromDirectoryRecursively($root, $diskName)
     {
-        // TODO: 重构这个方法
-        $localDiskRoot = realpath(config('filesystems.disks.local.root'));
+        $disk = Storage::disk($diskName);
+        if (!$disk->exists($root)) {
+            $this->error("dir [$root] not exists! aborted.");
+            return;
+        }
 
-        // $r = Storage::disk(null)->directories();
+        $files = $disk->allFiles($root);
+        $validPaths = array_filter($files, [$this, 'isValidHomeTimelineName']);
+        $count = count($validPaths);
+        if ($count == 0) {
+            $this->info("None files founded in $root, aborted.");
+            return;
+        }
 
-        foreach ($dirs as $dir) {
-            $files = File::files($dir);
-            if (count($files) == 0) {
-                $this->error("empty dir [$dir] skipped.");
-                continue;
-            }
-            foreach ($files as $file) {
-                $real = realpath($file);
-                // 判断是否为local存储下的文件
-                if (strstr($real, $localDiskRoot)) {
-                    $path = substr($real, strlen($localDiskRoot) + 1);
-                    if ($this->disk->exists($path)) {
-                        $job = new GetTimelineRequestFromFile($this->diskName, $path);
-                        $request = $job->handle();
-                        $this->dispatchImportJob($request);
-                    }
-                }
-            }
+        if (!$this->confirm("Finded $count json files. Confirm import?")) {
+            $this->info('Import aborted!');
+            return;
+        }
+        foreach ($validPaths as $path) {
+            $job = new GetTimelineRequestFromFile($diskName, $path);
+            $request = $job->handle();
+
+            $this->dispatchImportJob($request);
         }
     }
 }

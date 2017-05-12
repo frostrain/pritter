@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\TwitterTrait;
+use App\Models\AttributesTrait;
 use App\Models\TwitterUser;
 use App\Models\TwitterMedia;
 use App\Models\Media;
@@ -11,6 +12,7 @@ use App\Models\Media;
 class Tweet extends Model
 {
     use TwitterTrait;
+    use AttributesTrait;
 
     public $incrementing = false;
 
@@ -26,22 +28,14 @@ class Tweet extends Model
      */
     protected $entities;
 
-    /**
-     * @return bool
-     */
-    public function hasImage()
+    public function getIncrementAttributes()
     {
-        // TODO
+        return ['retweet_count', 'favorite_count'];
     }
-    /**
-     * 设置 truncated 属性.
-     * 将传入的 $val 转换为 0 或 1.
-     * 虽然不转换 $val 也可以工作, 但是 $model->getDirty() 会认为有数据'脏了'.
-     * @param mixed $val
-     */
-    public function setTruncatedAttribute($val)
+
+    public function getBooleanAttributes()
     {
-        $this->attributes['truncated'] = $val ? 1 : 0;
+        return ['is_following_author', 'truncated'];
     }
 
     /**
@@ -100,6 +94,12 @@ class Tweet extends Model
     public function quoted_status()
     {
         return $this->belongsTo('App\Models\Tweet', 'quoted_id', 'id');
+    }
+
+    public function getTextAttribute()
+    {
+        $text = str_replace(["\n"], ['<br/>'], $this->attributes['text']);
+        return $text;
     }
 
     /**
@@ -166,6 +166,9 @@ class Tweet extends Model
     public function setUserAttribute($userData)
     {
         $this->twitter_user_id = $userData['id'];
+
+        $this->is_following_author = array_get($userData, 'following', false);
+
         $user = TwitterUser::find($userData['id']);
         if (!$user) {
             $user = new TwitterUser($userData);

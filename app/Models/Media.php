@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Interfaces\Downloadable;
 use App\Models\MediaTrait;
+use Storage;
 
 class Media extends Model implements Downloadable
 {

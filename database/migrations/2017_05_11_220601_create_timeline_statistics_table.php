@@ -20,7 +20,7 @@ class CreateTimelineStatisticsTable extends Migration
             // 目前获取的最小id
             $table->bigInteger('min_id')->unsigned()->nullable();
             // 最小id是否已经到头了(无法获取更多旧数据了)
-            $table->bool('is_min_end')->default(0);
+            $table->boolean('is_min_end')->default(0);
             // 目前获取的最大id
             $table->bigInteger('max_id')->unsigned()->nullable();
             $table->integer('count')->unsigned()->nullable();

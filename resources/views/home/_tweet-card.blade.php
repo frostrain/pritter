@@ -12,12 +12,14 @@
   @if ($tweet->isReply())
     <div>回复 {{ '@'.$tweet->in_reply_to_screen_name }}</div>
   @endif
-  {{ $tweet->text }}
+  {!! $tweet->text !!}
   @if ($tweet->media->count())
     <div class="row">
     @foreach ($tweet->media as $item)
       <div class="col-md-3">
-        <img src="{{ $item->url }}" style="max-width: 100%;" />
+        <a href="{{ $item->url }}" data-fancybox="group-{{ $tweet->id }}">
+          <img src="{{ $item->url }}" style="max-width: 100%;" />
+        </a>
       </div>
     @endforeach
     </div>
@@ -36,7 +38,7 @@
           {{ $tweet->quoted_status->user->name }} {{ '@'.$tweet->quoted_status->user->screen_name }}
         </h4>
         <div>
-          {{ $tweet->quoted_status->text }}
+          {!! $tweet->quoted_status->text !!}
         </div>
       </div>
     </blockquote>
