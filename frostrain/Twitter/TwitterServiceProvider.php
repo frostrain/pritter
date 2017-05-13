@@ -16,7 +16,7 @@ class TwitterServiceProvider extends Base
         $this->app->singleton(Twitter::class, function ($app){
             $t = new Twitter($app['config'], $app['session.store']);
             $tmhOAuthConfig = config('ttwitter.tmhOAuth', []);
-            debug($tmhOAuthConfig);
+            // var_dump($tmhOAuthConfig);
             $t->reconfig($tmhOAuthConfig);
             return $t;
         });

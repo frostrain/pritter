@@ -6,6 +6,7 @@
 * 后端
 - [X] 改进 api 包
 - [-] Tweet 模型
+  + [ ] 文本分析: 链接, hashtag 等
 - [-] TweetTranslation 模型
 - [-] TwitterUser 模型
 - [-] Media 模型
@@ -13,6 +14,7 @@
 - [-] TimelineStatistic 模型
 - [ ] 定时任务
 - [ ] 命令 (command)
+  + [ ] cmd: 检查代理是否正常工作(twitter是否能正常访问)
   + [X] cmd: 获取最新的推文 (pri:latest-home-timeline)
   + [ ] cmd: 检查是否有范围遗漏, 并获取数据
   + [X] cmd: 获取旧推文 (pri:past-home-timeline)
@@ -31,5 +33,7 @@
   + statuses/user_timeline 的旧数据是否已经请求完(3200条左右)
 - [ ] emoji 显示问题
 - [ ] 翻译
+** 问题
+- emoji 表情有一部分还是不能显示.
 * 前端
 * 计划

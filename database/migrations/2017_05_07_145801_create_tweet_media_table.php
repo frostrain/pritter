@@ -23,7 +23,8 @@ class CreateTweetMediaTable extends Migration
             $table->tinyInteger('type')->unsigned();
 
             $table->boolean('is_handled')->default(0);
-            $table->boolean('is_failed')->default(0);
+            // 失败次数, 超过一定次数就不再重试
+            $table->tinyInteger('failed_count')->default(0);
             // 文件尺寸
             $table->integer('size')->unsigned()->default(0);
             $table->string('disk')->nullable();

@@ -7,4 +7,6 @@ return [
     'default_public_disk' => 'public',
     // 默认每次请求的数据量
     'request_count' => 200,
+    // 下载失败时累计重试的次数
+    'download_retry_count' => 3,
 ];

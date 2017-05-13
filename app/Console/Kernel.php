@@ -11,6 +11,9 @@ use App\Console\Commands\RequestRateLimit;
 use App\Console\Commands\ImportHomeTimeline;
 use App\Console\Commands\Download;
 use App\Console\Commands\CheckStorageMediaFile;
+use App\Console\Commands\Iteration;
+use App\Models\ErrorLog;
+use Carbon\Carbon;
 
 class Kernel extends ConsoleKernel
 {
@@ -27,6 +30,7 @@ class Kernel extends ConsoleKernel
         ImportHomeTimeline::class,
         Download::class,
         CheckStorageMediaFile::class,
+        Iteration::class,
     ];
 
     /**
@@ -37,8 +41,27 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')
-        //          ->hourly();
+        // $schedule->command('reminders:send')
+        //             ->hourly()
+        //             ->between('7:00', '22:00');
+
+        $date = Carbon::now()->toDateString();
+        $out = 'storage/logs/'.$date.'.log';
+
+        try {
+            // 本地 5点到24点, 每2分钟执行一次
+            $schedule->command('pri:iteration')
+                ->cron('*/2 * * * * *')
+                ->between('5:00', '24:00');
+            // ->appendOutputTo($out); // 追加写入
+            // 本地 0点到5点, 每5分钟执行一次
+            $schedule->command('pri:iteration')
+                ->cron('*/5 * * * * *')
+                ->between('0:00', '5:00');
+        } catch (\Exception $e) {
+            ErrorLog::log($e, ['type' => 1]);
+        }
+
     }
 
     /**

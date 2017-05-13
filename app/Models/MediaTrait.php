@@ -19,8 +19,8 @@ trait MediaTrait
      */
     public function setFailed()
     {
-        $this->is_handled = true;
-        $this->is_failed = true;
+        $this->is_handled = false;
+        $this->failed_count = array_get($this->attributes, 'failed_count', 0) + 1;
         $this->save();
     }
     /**
@@ -32,15 +32,18 @@ trait MediaTrait
     public static function getUndownloaded($count, $skip = 0)
     {
         $sort = self::getPriorityOrderBy();
+        $retryCount = config('pritter.download_retry_count', 3);
 
         // 返回所有
         if ($count === -1) {
             // 注意, skip() 必须与 take() 一起使用, 否则生成的 sql 无效..
             return self::where('is_handled', false)
+                ->where('failed_count', '<=', $retryCount)
                 ->orderBy($sort['field'], $sort['direction'])->get();
         }
 
         return self::where('is_handled', false)
+            ->where('failed_count', '<=', $retryCount)
             ->orderBy($sort['field'], $sort['direction'])
             ->skip($skip)->take($count)->get();
     }
@@ -89,6 +92,8 @@ trait MediaTrait
             $this->size = $size;
             // 标记为已处理
             $this->is_handled = true;
+            // 重置(下载)失败次数
+            $this->failed_count = 0;
             $this->save();
         } else {
             throw new \InvalidArgumentException("文件不存在: [$disk] $path");

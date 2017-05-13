@@ -1,9 +1,7 @@
 {{-- 显示一条推特的内容 --}}
 
 <div class="media-left">
-  <a href="#">
-    <img class="media-object" src="{{ $tweet->user->profile_image_url }}" width="50" />
-  </a>
+    <img class="media-object" src="{{ $tweet->user->profile_image_url }}" width="48" />
 </div>
 <div class="media-body">
   <h4 class="media-heading">
@@ -15,23 +13,21 @@
   {!! $tweet->text !!}
   @if ($tweet->media->count())
     <div class="row">
-    @foreach ($tweet->media as $item)
-      <div class="col-md-3">
-        <a href="{{ $item->url }}" data-fancybox="group-{{ $tweet->id }}">
-          <img src="{{ $item->url }}" style="max-width: 100%;" />
-        </a>
+      <div class="col-md-12">
+        @foreach ($tweet->media as $item)
+          <a href="{{ $item->url }}" data-fancybox="group-{{ $tweet->id }}">
+            <img src="{{ $item->url }}" style="max-width:100%;height:200px;" />
+          </a>
+        @endforeach
       </div>
-    @endforeach
     </div>
   @endif
 
   @if ($tweet->hasQuote())
     <blockquote>
       <div class="media-left media-middle">
-        <a href="#">
-          <img class="media-object"
+          <img class="media-object" width="48"
                src="{{ $tweet->quoted_status->user->profile_image_url }}" />
-        </a>
       </div>
       <div class="media-body">
         <h4 class="media-heading">

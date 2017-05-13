@@ -83,6 +83,7 @@ class RequestHomeTimeline extends Command
             $this->info("storage: [{$request->disk}] {$request->path}");
         } catch (\Exception $e) {
             $error = $e->getMessage();
+            // var_dump($e->getTraceAsString());
             $this->error("failed: \n".$error);
         }
     }

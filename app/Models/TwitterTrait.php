@@ -26,10 +26,13 @@ trait TwitterTrait
      */
     public function setCreatedAtAttribute($time)
     {
-        if ($time instanceof Carbon){
-            $this->attributes['created_at'] = $time;
-        } else {
-            $this->attributes['created_at'] = new Carbon($time);
+        $timezone = config('app.timezone');
+        if (!($time instanceof Carbon)) {
+            $time = new Carbon($time);
         }
+        // twitter 返回的数据是 UTC+0, 我们需要设置为本地时间
+        // 数据库中保存的时间也是本地时间
+        $time->setTimezone($timezone);
+        $this->attributes['created_at'] = $time;
     }
 }

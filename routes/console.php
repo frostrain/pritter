@@ -34,7 +34,9 @@ Artisan::command('pri:pu', function () {
 });
 
 Artisan::command('pri:info', function () {
+    $time = \Carbon\Carbon::now();
     $max = ini_get('max_execution_time');
-    $this->info('max execution time: '.$max);
+    $this->info($time.' max execution time: '.$max);
+    var_dump(123);
 
 });
