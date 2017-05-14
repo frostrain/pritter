@@ -179,6 +179,7 @@ return [
 
         Frostrain\Twitter\TwitterServiceProvider::class,
         Frostrain\TranslatorApi\TranslatorApiServiceProvider::class,
+        igaster\laravelTheme\themeServiceProvider::class,
 
         Barryvdh\Debugbar\ServiceProvider::class,
     ],
@@ -232,6 +233,7 @@ return [
 
         'Twitter' => Thujohn\Twitter\Facades\Twitter::class,
         'TranslatorApi' => Frostrain\TranslatorApi\TranslatorApiFacade::class,
+        'Theme' => igaster\laravelTheme\Facades\Theme::class,
 
         'Debugbar' => Barryvdh\Debugbar\Facade::class,
     ],

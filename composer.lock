@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "e9fabd683f0c9795c20a2df6d6e91b0c",
-    "content-hash": "412eaf624700bd4af6f2842842c97843",
+    "hash": "190341c32dcda64839ff595bccab27f1",
+    "content-hash": "a5ffe9c6a72442d46c5b14de3722060e",
     "packages": [
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -326,6 +326,62 @@
                 "url"
             ],
             "time": "2017-03-20 17:10:46"
+        },
+        {
+            "name": "igaster/laravel-theme",
+            "version": "v1.14",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/igaster/laravel-theme.git",
+                "reference": "2f15e330c6fb3fec3a8ebbe424f4f22933ce3afb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://files.phpcomposer.com/files/igaster/laravel-theme/2f15e330c6fb3fec3a8ebbe424f4f22933ce3afb.zip",
+                "reference": "2f15e330c6fb3fec3a8ebbe424f4f22933ce3afb",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": ">=5.2.0",
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "illuminate/database": "~5.2",
+                "orchestra/testbench": "~3.0",
+                "phpunit/phpunit": "~4.0",
+                "vlucas/phpdotenv": "~2.0"
+            },
+            "suggest": {
+                "orchestra/asset": "Use '@css' and '@js' in Blade files"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "igaster\\laravelTheme\\": "src/",
+                    "igaster\\laravelTheme\\Tests\\": "tests/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Giannis Gasteratos",
+                    "email": "igasteratos@gmail.com"
+                }
+            ],
+            "description": "Laravel 5 Themes: Asset & Views folder per theme. Theme inheritance. Blade integration and more...",
+            "homepage": "https://github.com/igaster/laravel-theme",
+            "keywords": [
+                "assets",
+                "blade",
+                "laravel-5",
+                "package",
+                "themes",
+                "views"
+            ],
+            "time": "2017-03-30 11:50:54"
         },
         {
             "name": "jakub-onderka/php-console-color",

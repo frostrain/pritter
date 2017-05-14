@@ -16,21 +16,18 @@
          <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
          <![endif]-->
     <link href="https://cdn.bootcss.com/fancybox/3.0.47/jquery.fancybox.min.css" rel="stylesheet">
+
+    <link href="{{ Theme::url('css/app.css') }}" rel="stylesheet">
   </head>
   <body>
-    <nav class="navbar navbar-default">
-      <div class="container">
-        <div id="navbar" class="collapse navbar-collapse">
-          <ul class="nav navbar-nav">
-            <li class=""><a href="#">首页</a></li>
-          </ul>
-        </div><!--/.nav-collapse -->
-      </div>
-    </nav>
+
+    @include('layouts.header')
 
     <div class="container">
       @yield('content')
     </div>
+
+    @include('layouts.footer')
 
     <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>

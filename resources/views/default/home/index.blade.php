@@ -3,12 +3,12 @@
 @section('content')
   <div class="col-md-12">
     <div class="panel panel-default">
-      <!-- Default panel contents -->
-      <div class="panel-heading">推特</div>
+      <div class="panel-heading">推文</div>
 
-      {{ $lists->render() }}
+      <div class="tac">
+        {{ $lists->render() }}
+      </div>
 
-      <!-- List group -->
       <ul class="list-group">
         @foreach ($lists as $tweet)
           <li class="list-group-item">
@@ -27,6 +27,11 @@
             </li>
         @endforeach
       </ul>
+
+      <div class="tac">
+        {{ $lists->render() }}
+      </div>
+
     </div>
   </div>
 @endsection
