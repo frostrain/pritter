@@ -1,7 +1,7 @@
 #+TITLE: pritter
 
-* 说明
-基于 laravel 5.4 的推特 采集/显示 程序
+* 关于
+基于 laravel 5.4 的 推特采集/显示 程序
 * 需求
 - laravel 5.4 的要求
 - 推特 api key
@@ -11,5 +11,25 @@
 - 虽然程序中已经尽力避免使用到 bigInt, 不过还是推荐在 64bit 的系统上运行, bigInt 需要 64bit 的系统才能正常工作
 - 如果是 windows, 还需要 php 7.0 或以上才能支持 bigInt
 - 即使 PHP 不支持 64bit , 应该也能正常工作...
+* 使用说明
+首先你需要复制 .env.example 为 .env 文件, 然后配置其中的 twitter api key 等
+
+可以手动执行命令来进行 采集推特/下载图片 等操作, 也可以配合 crontab 自动执行采集任务
+#+BEGIN_SRC sh
+  # 列出 pritter 的相关命令
+  php artisan list pri
+
+  # 请求api, 获取最近的 home_timeline, 也就是首页的推文
+  php artisan pri:latest-home-timeline
+
+  # 导入推文
+  php artisan pri:import-home-timeline
+
+  # 下载图片到本地, tweet-media 是推文中的图片, media 是用户头像等
+  php artisan pri:download tweet-media media
+
+  # 一次完整迭代, 包括上面的 api请求, 导入推文, 下载图片 三个操作
+  php artisan pri:iteration
+#+END_SRC
 * license
 MIT

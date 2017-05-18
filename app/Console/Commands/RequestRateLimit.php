@@ -23,7 +23,7 @@ class RequestRateLimit extends Command
      *
      * @var string
      */
-    protected $description = 'request twitter api rate limit';
+    protected $description = 'Request and show twitter api rate limit';
 
     /**
      * Create a new command instance.

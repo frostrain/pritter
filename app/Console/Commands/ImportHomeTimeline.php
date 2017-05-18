@@ -26,7 +26,7 @@ class ImportHomeTimeline extends Command
      *
      * @var string
      */
-    protected $description = 'Import home timeline from file';
+    protected $description = 'Import home timeline from model or file';
     protected $disk;
     /**
      * @var string
@@ -68,6 +68,9 @@ class ImportHomeTimeline extends Command
         }
     }
 
+    /**
+     * 从 TimelineRequest 模型对应的文件中导入数据.
+     */
     protected function importFromRequests($count)
     {
         $requests = TimelineRequest::getUnimportedRequest($count);
@@ -108,6 +111,7 @@ class ImportHomeTimeline extends Command
     }
 
     /**
+     * 从指定目录下的 json 文件中导入数据.
      * @param string $root
      * @param string $diskName
      */

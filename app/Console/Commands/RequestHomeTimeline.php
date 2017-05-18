@@ -22,7 +22,7 @@ class RequestHomeTimeline extends Command
      *
      * @var string
      */
-    protected $description = 'request twitter home timeline';
+    protected $description = 'Request twitter home timeline';
 
     /**
      * Create a new command instance.
@@ -65,7 +65,7 @@ class RequestHomeTimeline extends Command
         try {
             $response = Twitter::getHomeTimeline($options);
             $dir = date('Y/m/d/');
-            // 时间戳放在前面是为了好排序...
+            // 时间戳放在前面是为了名称排序...
             $file = 'home_timeline_'.time().'_'.str_random(6).'.json';
             $path = $dir.$file;
             $disk = config('pritter.default_disk');

@@ -28,7 +28,7 @@ class Download extends Command
      *
      * @var string
      */
-    protected $description = 'Download <fg=yellow>files</fg=yellow>: images, etc';
+    protected $description = 'Download <fg=yellow>files</fg=yellow>: images, user avatars, etc';
 
     /**
      * 用来记录任务中下载的文件.

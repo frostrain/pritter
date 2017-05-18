@@ -19,7 +19,7 @@ class Iteration extends Command
      *
      * @var string
      */
-    protected $description = '1. Reqeuest api. 2. Import Data. 3. Download media.';
+    protected $description = '1. Reqeuest twitter api. 2. Import Data. 3. Download media.';
 
     /**
      * Create a new command instance.
