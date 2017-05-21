@@ -11,5 +11,9 @@ const { mix } = require('laravel-mix');
  |
  */
 
-mix.js('resources/assets/js/app.js', 'public/loveliver/js')
-   .sass('resources/assets/sass/app.scss', 'public/loveliver/css');
+// mix.js('resources/assets/js/app.js', 'public/loveliver/js')
+//    .sass('resources/assets/sass/app.scss', 'public/loveliver/css');
+
+
+// watch 模式下 copy 可以自动复制更新过的文件
+mix.copy('resources/assets/loveliver', 'public/loveliver');

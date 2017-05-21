@@ -15,7 +15,9 @@ class Tweet extends Model
     use AttributesTrait;
 
     public $incrementing = false;
-
+    /**
+     * @var array
+     */
     protected $fillable = [
         'id', 'id_str', 'retweeted_status', 'quoted_status', 'in_reply_to_status_id',
         'in_reply_to_screen_name', 'truncated', 'text',
@@ -26,7 +28,7 @@ class Tweet extends Model
     /**
      * @var array
      */
-    protected $entities;
+    protected $entitiesArray;
 
     public function getIncrementAttributes()
     {
@@ -96,23 +98,141 @@ class Tweet extends Model
         return $this->belongsTo('App\Models\Tweet', 'quoted_id', 'id');
     }
 
-    public function getTextAttribute()
+    /**
+     * 处理推文中的 url
+     * @param string $text
+     * @param array $urls
+     * @return string
+     */
+    protected function handleTextUrls($text, $urls)
     {
-        $text = str_replace(["\n"], ['<br/>'], $this->attributes['text']);
+        if (!$urls){
+            return $text;
+        }
+
+        $short = array_pluck($urls, 'url');
+        $full = array_pluck($urls, 'expanded_url');
+        foreach ($full as $k => $f) {
+            if (preg_match('/twitter.com\/.*?\/status\/\d+/', $f)) {
+                // 如果是其他推文的链接, 可以考虑直接删除链接
+                // 这种链接一般是 引用 了其他推文, 自动加上去的?
+                $full[$k] = '';
+            } else {
+                $full[$k] = "<a href='$f' target='_blank'>{$short[$k]}</a>";
+            }
+        }
+        $text = str_replace($short, $full, $text);
         return $text;
     }
 
     /**
+     * 处理推文中的 media
+     * @param string $text
+     * @param array $media
+     * @return string
+     */
+    protected function handleTextMedia($text, $media)
+    {
+        if (!$media){
+            return $text;
+        }
+
+        $short = array_pluck($media, 'url');
+        $type = array_pluck($media, 'type');
+        $expanded = array_pluck($media, 'expanded_url');
+        foreach ($expanded as $k => $href) {
+            if ($type[$k] === 'photo') {
+                // 直接去掉图片链接?
+                $expanded[$k] = '';
+            } else {
+                $expanded[$k] = "<a href='$herf' target='_blank'>{$short[$k]}</a>";
+            }
+        }
+        $text = str_replace($short, $expanded, $text);
+        return $text;
+    }
+
+    /**
+     * 处理推文中的 hashtag
+     * @param string $text
+     * @param array $hashtags
+     * @return string
+     */
+    protected function handleTextHashtags($text, $hashtags)
+    {
+        if (!$hashtags){
+            return $text;
+        }
+
+        $tags = array_pluck($hashtags, 'text');
+        $search = [];
+        $replace = [];
+        foreach ($tags as $k => $t) {
+            $search[] = '#'.$t;
+            $href = twitter_url('h', $t);
+            $replace[] = "<a href='$href' target='_blank'>#{$t}</a>";
+        }
+        $text = str_replace($search, $replace, $text);
+        return $text;
+    }
+
+    /**
+     * 处理推文中的 metion, 也就是@用户.
+     * @param string $text
+     * @param array $metions
+     * @return string
+     */
+    protected function handleTextMentions($text, $mentions)
+    {
+        if (!$mentions){
+            return $text;
+        }
+
+        $usernames = array_pluck($mentions, 'screen_name');
+        $search = [];
+        $replace = [];
+        foreach ($usernames as $k => $name) {
+            $search[] = '@'.$name;
+            $href = twitter_url('u', $name);
+            $replace[] = "<a href='$href' target='_blank'>@{$name}</a>";
+        }
+        $text = str_replace($search, $replace, $text);
+        return $text;
+    }
+
+    /**
+     * 返回推文文本内容(html格式).
+     * @return string
+     */
+    public function getTextAttribute()
+    {
+        $text = $this->attributes['text'];
+        $entities = $this->entities;
+
+        // 注意, 被转的推里面的 entities.urls 貌似没有 status 类型的链接..
+        $text = $this->handleTextUrls($text, array_get($entities, 'urls'));
+        $text = $this->handleTextMedia($text, array_get($entities, 'media'));
+        $text = $this->handleTextHashtags($text, array_get($entities, 'hashtags'));
+        $text = $this->handleTextMentions($text, array_get($entities, 'user_mentions'));
+
+        $text = str_replace(["\n"], ['<br/>'], $text);
+
+        return $text;
+    }
+
+    /**
+     * 返回 entities 数组.
+     * 包括 hashtags, symbols, user_metions, urls 字段.
      * @return array
      */
     public function getEntitiesAttribute()
     {
         if ($this->attributes['entities']) {
-            if (!$this->entities) {
-                $this->entities = json_decode($this->attributes['entities'], true);
+            if (!$this->entitiesArray) {
+                $this->entitiesArray = json_decode($this->attributes['entities'], true, 512, JSON_BIGINT_AS_STRING);
             }
 
-            return $this->entities;
+            return $this->entitiesArray;
         } else {
             return [];
         }
@@ -125,7 +245,7 @@ class Tweet extends Model
     public function setEntitiesAttribute($entities)
     {
         // media 是图片, 不在这里保存
-        unset($entities['media']);
+        // unset($entities['media']);
         $this->attributes['entities'] = json_encode($entities);
         $this->entities = $entities;
     }

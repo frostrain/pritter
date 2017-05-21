@@ -17,19 +17,23 @@ class ImportTweets
      */
     protected $collection;
     /**
+     * @var bool
+     */
+    protected $isReimport;
+    /**
      * @var int 当前任务中插入的新推文数(不包括其中的引用/转推)
      */
     protected $new;
     /**
      * Create a new job instance.
-     * 可以只传入 $data 数组, 或者只传入一个 $request.
-     * @param array $data
+     * @param \App\Interfaces\TweetCollection $collection
      * @param mixed $requestId TimelineRequest 对象或者其 id
      * @return void
      */
-    public function __construct(TweetCollection $collection)
+    public function __construct(TweetCollection $collection, $reimport = false)
     {
         $this->collection = $collection;
+        $this->isReimport = $reimport;
     }
 
     /**
@@ -39,14 +43,16 @@ class ImportTweets
      */
     public function handle()
     {
-        if (!$this->collection->isImported()){
-            $data = $this->collection->getTweets();
-            foreach ($data as $tweet) {
-                $this->handleTweet($tweet);
-            }
-            // 这里应该注意一下有可能发生多个线程同时(重复)导入的情况...
-            $this->collection->setImport(true);
+        if ($this->collection->isImported() && !$this->isReimport){
+            return;
         }
+
+        $data = $this->collection->getTweets();
+        foreach ($data as $tweet) {
+            $this->handleTweet($tweet);
+        }
+        // 这里应该注意一下有可能发生多个线程同时(重复)导入的情况...
+        $this->collection->setImport(true);
     }
 
     protected function handleTweet($tweetData)

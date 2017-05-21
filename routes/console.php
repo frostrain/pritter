@@ -23,7 +23,10 @@ Artisan::command('inspire', function () {
 
 
 Artisan::command('pri:pu', function () {
-
+    $url = 'https://twitter.com/i/web/status/863381727963631616';
+    if (preg_match('/twitter.com\/.*?\/status\/\d+/', $url)) {
+        $this->info('y');
+    }
 })->describe('Test cmd');
 
 Artisan::command('pri:info', function () {

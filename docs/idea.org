@@ -14,6 +14,9 @@
 - [-] TimelineStatistic 模型
 - [ ] 定时任务
 - [ ] 命令 (command)
+  + [ ] cmd: cli显示最近的错误记录
+  + [ ] cmd: cli下显示最近的twitter?
+  + [ ] cmd: 清理api返回的 空结果 文件
   + [ ] cmd: 检查代理是否正常工作(twitter是否能正常访问)
   + [X] cmd: 获取最新的推文 (pri:latest-home-timeline)
   + [ ] cmd: 检查是否有范围遗漏, 并获取数据
@@ -26,7 +29,7 @@
   + [ ] cmd: 获取 用户自身(api key 用户) 的信息.
   + [ ] cmd: 获取 statuses/user_timeline
   + [ ] 使用 progress bar 来显示任务进度
-  + [-] cmd: 从文件中导入数据, 需要创建 TimelineRequest 模型对象, 并保留文件到 存储系统 中
+  + [-] cmd: 从文件中导入数据, 需要创建 TimelineRequest 模型对象
   + [-] cmd: 从文件系统中关联已经存在的图片
 - [ ] 记录 timeline 请求状况
   + statuses/home_timeline 的旧数据是否已经请求完(800条左右)

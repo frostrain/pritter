@@ -2,6 +2,9 @@
 
 define('LARAVEL_START', microtime(true));
 
+// 优先载入自己的辅助函数
+require __DIR__.'/../helpers/helpers.php';
+
 /*
 |--------------------------------------------------------------------------
 | Register The Composer Auto Loader

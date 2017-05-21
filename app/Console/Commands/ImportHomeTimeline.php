@@ -19,7 +19,7 @@ class ImportHomeTimeline extends Command
      *
      * @var string
      */
-    protected $signature = 'pri:import-home-timeline {--c|count=3} {--f|file=} {--disk=} {--r|root-dir=}';
+    protected $signature = 'pri:import-home-timeline {--c|count=3} {--f|file=} {--disk=} {--r|root-dir=} {--reimport}';
 
     /**
      * The console command description.
@@ -27,14 +27,28 @@ class ImportHomeTimeline extends Command
      * @var string
      */
     protected $description = 'Import home timeline from model or file';
-    protected $disk;
     /**
      * @var string
      */
     protected $diskName;
-
     /**
-     * Create a new command instance.
+     * @var int
+     */
+    protected $count;
+    /**
+     * @var array
+     */
+    protected $files;
+    /**
+     * @var string
+     */
+    protected $rootDir;
+    /**
+     * @var bool
+     */
+    protected $isReimport;
+
+    /* a new command instance.
      *
      * @return void
      */
@@ -51,29 +65,29 @@ class ImportHomeTimeline extends Command
     public function handle()
     {
         // 从数据库中搜索request来导入
-        $count = $this->option('count');
+        $this->count = $this->option('count');
         // 指定 storage 的 disk
         $this->diskName = $this->option('disk') ?: config('pritter.default_disk') ;
-        $this->disk = Storage::disk($this->diskName);
         // 这个选项存在表示从 $rootDir 下(recursive)找到的所有有效的文件导入
-        $rootDir = $this->option('root-dir');
-        $files = $this->parseArrayInput($this->option('file'));
+        $this->rootDir = $this->option('root-dir');
+        $this->files = $this->parseArrayInput($this->option('file'));
+        $this->isReimport = $this->option('reimport');
 
-        if ($rootDir) {
-            $this->importFromDirectoryRecursively($rootDir, $this->diskName);
-        } elseif ($files) {
-            $this->importFromFiles($files);
+        if ($this->rootDir) {
+            $this->importFromDirectoryRecursively();
+        } elseif ($this->files) {
+            $this->importFromFiles();
         } else {
-            $this->importFromRequests($count);
+            $this->importFromRequests();
         }
     }
 
     /**
      * 从 TimelineRequest 模型对应的文件中导入数据.
      */
-    protected function importFromRequests($count)
+    protected function importFromRequests()
     {
-        $requests = TimelineRequest::getUnimportedRequest($count);
+        $requests = TimelineRequest::getUnimportedRequest($this->count);
         if ($requests->isEmpty()) {
             $this->info('Nothing to import, skipped.');
             return;
@@ -83,19 +97,24 @@ class ImportHomeTimeline extends Command
         }
     }
 
-    protected function dispatchImportJob($request)
+    protected function dispatchImportJob($request, $reimport = false)
     {
         $file = "[{$request->disk}] {$request->path}";
         if ($request->isImported()) {
-            $this->info("$file - already imported, skipped.");
-        } else {
-            $this->info("start import: $file");
-            $start = microtime(true);
-            dispatch(new ImportTweets($request));
-            $end = microtime(true);
-            $seconds = sprintf('%.2f', $end - $start);
-            $this->info("import success, used time: $seconds");
+            if ($reimport) {
+                $this->info("Reimport file: $file");
+            } else {
+                $this->info("$file - already imported, skipped.");
+                return;
+            }
         }
+
+        $this->info("start import: $file");
+        $start = microtime(true);
+        dispatch(new ImportTweets($request, $reimport));
+        $end = microtime(true);
+        $seconds = sprintf('%.2f', $end - $start);
+        $this->info("import success, used time: $seconds");
     }
 
     protected function importFromFiles($files)
@@ -112,11 +131,11 @@ class ImportHomeTimeline extends Command
 
     /**
      * 从指定目录下的 json 文件中导入数据.
-     * @param string $root
-     * @param string $diskName
      */
-    protected function importFromDirectoryRecursively($root, $diskName)
+    protected function importFromDirectoryRecursively()
     {
+        $root = $this->rootDir;
+        $diskName = $this->diskName;
         $disk = Storage::disk($diskName);
         if (!$disk->exists($root)) {
             $this->error("dir [$root] not exists! aborted.");
@@ -139,7 +158,7 @@ class ImportHomeTimeline extends Command
             $job = new GetTimelineRequestFromFile($diskName, $path);
             $request = $job->handle();
 
-            $this->dispatchImportJob($request);
+            $this->dispatchImportJob($request, $this->isReimport);
         }
     }
 }
