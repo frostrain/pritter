@@ -1,0 +1,79 @@
+@main-color: #ff6600;
+// 推文中的 用户名/时间 等的颜色
+@tweet-info-color: #657786;
+
+body{
+    font-family: 'Open Sans','Helvetica Neue','Arial','Hiragino Sans GB','Microsoft YaHei','WenQuanYi Micro Hei',"sans-serif";
+    font-size: 14px;
+}
+
+.tac {
+    text-align: center;
+}
+
+.footer{
+    padding-top: 20px;
+    min-height: 60px;
+    border-top: 1px solid #e7e7e7;
+    color: #999;
+}
+
+.header-menu{
+    border-bottom: 5px solid @main-color;
+}
+#header-title{
+    float:none;
+    font-size: 20px;
+    color: @main-color;
+    line-height: 24px;
+}
+
+.ml20{
+    margin-left: 20px;
+}
+.mt20{
+    margin-top: 20px;
+}
+
+#twitter-logo{
+    display: inline;
+    width: 32px;
+}
+
+.tweet{
+    .username{
+        font-size: 16px;
+        font-weight: bold;
+    }
+    .photo{
+        border-radius: 5px;
+        max-witdh: 100%;
+        height: 200px;
+    }
+    .avatar{
+        border-radius: 5px;
+        width: 48px;
+        height: 48px;
+
+    }
+    .screen-name{
+        color: @tweet-info-color;
+    }
+    .time{
+        color: @tweet-info-color;
+        &:before{
+            content: "\00b7";
+            margin: 0 5px;
+        }
+    }
+    .retweet-hint{
+        margin-left: 32px;
+        color: @tweet-info-color;
+    }
+    .retweet-hint {
+        .glyphicon-retweet{
+            margin-right: 8px;
+            color: #0bb319;
+        }
+    }
+}

@@ -17,13 +17,6 @@ class HomeController extends Controller
         )->where('is_following_author', true)
                ->orderBy('id', 'desc')->paginate(50);
 
-
-        // debug($lists[0]->entities);
-        debug($lists[9]->text);
-        debug($lists[9]->retweeted_status->entities);
-        debug($lists[9]->entities);
-        debug($lists[10]->entities);
-
         return view('home.index', compact('lists'));
     }
 }

@@ -112,13 +112,13 @@ class Tweet extends Model
 
         $short = array_pluck($urls, 'url');
         $full = array_pluck($urls, 'expanded_url');
-        foreach ($full as $k => $f) {
-            if (preg_match('/twitter.com\/.*?\/status\/\d+/', $f)) {
+        foreach ($full as $k => $href) {
+            if (preg_match('/twitter.com\/.*?\/status\/\d+/', $href)) {
                 // 如果是其他推文的链接, 可以考虑直接删除链接
                 // 这种链接一般是 引用 了其他推文, 自动加上去的?
                 $full[$k] = '';
             } else {
-                $full[$k] = "<a href='$f' target='_blank'>{$short[$k]}</a>";
+                $full[$k] = "<a href='$href' target='_blank'>{$href}</a>";
             }
         }
         $text = str_replace($short, $full, $text);
@@ -145,7 +145,7 @@ class Tweet extends Model
                 // 直接去掉图片链接?
                 $expanded[$k] = '';
             } else {
-                $expanded[$k] = "<a href='$herf' target='_blank'>{$short[$k]}</a>";
+                $expanded[$k] = "<a href='$herf' target='_blank'>{$href}</a>";
             }
         }
         $text = str_replace($short, $expanded, $text);

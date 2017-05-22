@@ -15,7 +15,7 @@
         <div class="tac navbar-brand" id="header-title">
           <span class="glyphicon glyphicon-twitter"></span>
           loveliver 推特镜像站
-          <img class="ml20" id="twitter-logo" src="{{ Theme::url('twitter.png') }}"/>
+          <img class="ml20" id="twitter-logo" src="{{ Theme::url('img/twitter.png') }}"/>
         </div>
       </div>
       <div class="col-md-3">
